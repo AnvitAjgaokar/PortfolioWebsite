@@ -177,14 +177,14 @@ const GLOBAL_STYLES = `
   *, *::before, *::after { box-sizing: border-box; }
   html { scroll-behavior: smooth; }
   body {
-    background: #0a0a0a;
+    background: #111111;
     color: #d4d4d4;
     font-family: 'Inter', system-ui, sans-serif;
     margin: 0; padding: 0;
     -webkit-font-smoothing: antialiased;
   }
   ::-webkit-scrollbar { width: 3px; }
-  ::-webkit-scrollbar-track { background: #0a0a0a; }
+  ::-webkit-scrollbar-track { background: #111111; }
   ::-webkit-scrollbar-thumb { background: #2a2a2a; }
   ::-webkit-scrollbar-thumb:hover { background: #64ffda; }
 
@@ -225,8 +225,8 @@ const GLOBAL_STYLES = `
 
   /* Cards */
   .card {
-    background: #0e0e0e;
-    border: 1px solid #1c1c1c;
+    background: #181818;
+    border: 1px solid #272727;
     transition: transform 0.3s cubic-bezier(0.16,1,0.3,1),
                 border-color 0.3s ease,
                 box-shadow 0.3s ease;
@@ -239,9 +239,9 @@ const GLOBAL_STYLES = `
 
   /* Skill tags */
   .skill-tag {
-    border: 1px solid #242424;
-    background: #111;
-    color: #888;
+    border: 1px solid #303030;
+    background: #1e1e1e;
+    color: #b8b8b8;
     font-family: 'Space Mono', monospace;
     cursor: default;
     transition: background 0.2s, border-color 0.2s, color 0.2s;
@@ -254,9 +254,9 @@ const GLOBAL_STYLES = `
 
   /* Tech chips */
   .tech-chip {
-    border: 1px solid #222;
-    background: #111;
-    color: #666;
+    border: 1px solid #303030;
+    background: #1e1e1e;
+    color: #999;
     font-family: 'Space Mono', monospace;
     font-size: 0.68rem;
     transition: border-color 0.2s, color 0.2s;
@@ -266,7 +266,7 @@ const GLOBAL_STYLES = `
   /* Nav links */
   .nav-link {
     position: relative;
-    color: #777;
+    color: #aaa;
     transition: color 0.2s;
     background: transparent;
     border: 0;
@@ -288,7 +288,7 @@ const GLOBAL_STYLES = `
 
   /* Social icons */
   .social-icon {
-    color: #555;
+    color: #888;
     transition: color 0.2s, transform 0.2s;
     display: inline-flex;
   }
@@ -308,8 +308,8 @@ const GLOBAL_STYLES = `
 
   /* Achievement cards */
   .achievement-card {
-    background: #0b0b0b;
-    border: 1px solid #1c1c1c;
+    background: #161616;
+    border: 1px solid #272727;
     position: relative;
     overflow: hidden;
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
@@ -630,7 +630,7 @@ function Hero() {
 
         {/* Tagline */}
         <p
-          className={`text-[#5a5a5a] text-base max-w-lg leading-7 mb-12 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-7'}`}
+          className={`text-[#aaa] text-base max-w-lg leading-7 mb-12 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-7'}`}
           style={{ transition: 'opacity 0.7s ease, transform 0.7s ease', transitionDelay: '0.55s' }}
         >
           {meta.tagline}
@@ -664,7 +664,7 @@ function Hero() {
         >
           <div className="w-px h-10 bg-gradient-to-b from-transparent" style={{ backgroundImage: 'linear-gradient(to bottom, transparent, #64ffda)' }} />
           <span
-            className="font-display text-[#333] text-xs tracking-widest uppercase cursor-pointer"
+            className="font-display text-[#666] text-xs tracking-widest uppercase cursor-pointer"
             onClick={() => document.querySelector('#about')?.scrollIntoView({ behavior: 'smooth' })}
           >
             Scroll
@@ -674,10 +674,10 @@ function Hero() {
 
       {/* Bottom-right meta */}
       <div className="absolute bottom-8 right-6 lg:right-12 flex flex-col items-end gap-2">
-        <span className="font-display text-[#2d2d2d] text-xs tracking-widest flex items-center gap-1.5">
-          <MapPin size={9} style={{ color: '#3a3a3a' }} />{meta.location}
+        <span className="font-display text-[#777] text-xs tracking-widest flex items-center gap-1.5">
+          <MapPin size={9} style={{ color: '#666' }} />{meta.location}
         </span>
-        <a href={`mailto:${meta.email}`} className="font-display text-[#2d2d2d] text-xs tracking-widest hover:text-[#64ffda] transition-colors">
+        <a href={`mailto:${meta.email}`} className="font-display text-[#777] text-xs tracking-widest hover:text-[#64ffda] transition-colors">
           {meta.email}
         </a>
       </div>
@@ -747,7 +747,7 @@ function About() {
         {/* Bio */}
         <div ref={textRef} className={`fade-up delay-2 ${textInView ? 'in-view' : ''} space-y-5`}>
           {about.bio.map((p, i) => (
-            <p key={i} className="text-[#777] leading-7 text-sm">{p}</p>
+            <p key={i} className="text-[#bbb] leading-7 text-sm">{p}</p>
           ))}
 
           {/* Currently */}
@@ -757,8 +757,8 @@ function About() {
           >
             <div className="w-0.5 self-stretch shrink-0" style={{ background: '#64ffda' }} />
             <div>
-              <span className="font-display text-[10px] text-[#444] uppercase tracking-widest block mb-1">Currently</span>
-              <span className="text-[#999] text-sm">{about.currently}</span>
+              <span className="font-display text-[10px] text-[#777] uppercase tracking-widest block mb-1">Currently</span>
+              <span className="text-[#ccc] text-sm">{about.currently}</span>
             </div>
           </div>
 
@@ -767,7 +767,7 @@ function About() {
             {about.stats.map(stat => (
               <div key={stat.label} className="text-center">
                 <div className="font-display text-2xl font-bold" style={{ color: '#64ffda' }}>{stat.value}</div>
-                <div className="font-display text-[10px] text-[#444] uppercase tracking-widest mt-1">{stat.label}</div>
+                <div className="font-display text-[10px] text-[#777] uppercase tracking-widest mt-1">{stat.label}</div>
               </div>
             ))}
           </div>
@@ -802,18 +802,18 @@ function ExperienceItem({ job, index }) {
           </div>
           <div className="flex flex-col items-start sm:items-end gap-1.5 shrink-0">
             <span
-              className="font-display text-xs px-3 py-1 text-[#555]"
-              style={{ border: '1px solid #242424' }}
+              className="font-display text-xs px-3 py-1 text-[#aaa]"
+              style={{ border: '1px solid #333' }}
             >
               {job.duration}
             </span>
-            <span className="font-display text-[10px] text-[#383838]">{job.type}</span>
+            <span className="font-display text-[10px] text-[#777]">{job.type}</span>
           </div>
         </div>
 
         <ul className="space-y-2.5 mb-6">
           {job.descriptions.map((desc, j) => (
-            <li key={j} className="flex items-start gap-3 text-[#666] text-sm leading-6">
+            <li key={j} className="flex items-start gap-3 text-[#bbb] text-sm leading-6">
               <ChevronRight size={13} className="shrink-0 mt-1" style={{ color: '#64ffda' }} />
               {desc}
             </li>
@@ -831,7 +831,7 @@ function ExperienceItem({ job, index }) {
 function Experience() {
   const { experience } = portfolioData;
   return (
-    <section id="experience" style={{ background: '#080808' }} className="py-28">
+    <section id="experience" style={{ background: '#0e0e0e' }} className="py-28">
       <div className="max-w-6xl mx-auto px-6 lg:px-12">
         <SectionHeader number="02" title="Experience" subtitle="Where I've shipped." />
         <div className="relative pl-8">
@@ -926,7 +926,7 @@ function PersonalProjectCard({ project, index }) {
         </span>
       )}
 
-      <p className="text-[#5a5a5a] text-xs leading-5 flex-1 mb-4">{project.description}</p>
+      <p className="text-[#aaa] text-xs leading-5 flex-1 mb-4">{project.description}</p>
 
       <div className="flex flex-wrap gap-1.5 mt-auto">
         {project.techStack.map(t => <TechChip key={t} label={t} />)}
@@ -958,7 +958,7 @@ function ProfessionalProjectCard({ project, index }) {
         </span>
       )}
 
-      <p className="text-[#5a5a5a] text-xs leading-5 mb-4">{project.description}</p>
+      <p className="text-[#aaa] text-xs leading-5 mb-4">{project.description}</p>
 
       {project.impact && (
         <div
@@ -981,7 +981,7 @@ function Projects() {
   const [tab, setTab] = useState('personal');
 
   return (
-    <section id="projects" style={{ background: '#080808' }} className="py-28">
+    <section id="projects" style={{ background: '#0e0e0e' }} className="py-28">
       <div className="max-w-6xl mx-auto px-6 lg:px-12">
         <SectionHeader number="04" title="Projects" subtitle="Things I've built." />
 
@@ -995,7 +995,7 @@ function Projects() {
               key={t.key}
               onClick={() => setTab(t.key)}
               className={`font-display text-xs px-6 py-2.5 border-0 cursor-pointer transition-all ${
-                tab === t.key ? 'tab-active' : 'text-[#444] hover:text-[#777] bg-transparent'
+                tab === t.key ? 'tab-active' : 'text-[#777] hover:text-[#777] bg-transparent'
               }`}
             >
               {t.label}
@@ -1051,7 +1051,7 @@ function AchievementItem({ achievement, index }) {
         {display}
       </div>
       <h3 className="font-display text-[#ccc] text-xs uppercase tracking-widest mb-3">{achievement.title}</h3>
-      <p className="text-[#4a4a4a] text-xs leading-5">{achievement.description}</p>
+      <p className="text-[#aaa] text-xs leading-5">{achievement.description}</p>
     </div>
   );
 }
@@ -1112,9 +1112,9 @@ function BlogCard({ post, index }) {
         {post.title}
       </h3>
 
-      <p className="text-[#444] text-xs leading-5 flex-1 mb-4">{post.excerpt}</p>
+      <p className="text-[#777] text-xs leading-5 flex-1 mb-4">{post.excerpt}</p>
 
-      <div className="flex items-center gap-4 font-display text-[#333] text-[10px]">
+      <div className="flex items-center gap-4 font-display text-[#777] text-[10px]">
         <span className="flex items-center gap-1.5">
           <Clock size={9} />{post.readTime}
         </span>
@@ -1127,7 +1127,7 @@ function BlogCard({ post, index }) {
 function Blog() {
   const { blog } = portfolioData;
   return (
-    <section id="blog" style={{ background: '#080808' }} className="py-28">
+    <section id="blog" style={{ background: '#0e0e0e' }} className="py-28">
       <div className="max-w-6xl mx-auto px-6 lg:px-12">
         <SectionHeader number="06" title="Writing" subtitle="Thoughts worth sharing." />
         <div className="grid md:grid-cols-3 gap-4">
@@ -1153,11 +1153,11 @@ function Footer() {
   ];
 
   return (
-    <footer id="contact" style={{ background: '#060606', borderTop: '1px solid #111' }}>
+    <footer id="contact" style={{ background: '#0d0d0d', borderTop: '1px solid #252525' }}>
       <div className="max-w-6xl mx-auto px-6 lg:px-12 py-24">
         {/* CTA block */}
         <div ref={ref} className={`fade-up ${inView ? 'in-view' : ''} text-center mb-20`}>
-          <p className="font-display text-[#333] text-xs uppercase tracking-widest mb-4">
+          <p className="font-display text-[#777] text-xs uppercase tracking-widest mb-4">
             Currently open to new opportunities
           </p>
           <h2
@@ -1179,7 +1179,7 @@ function Footer() {
         <div className="w-full h-px mb-12" style={{ background: '#111' }} />
 
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-          <span className="font-display text-xl font-bold text-[#2a2a2a]">
+          <span className="font-display text-xl font-bold text-[#666]">
             {meta.initials}<span style={{ color: '#64ffda' }}>.</span>
           </span>
 
@@ -1191,7 +1191,7 @@ function Footer() {
             ))}
           </div>
 
-          <p className="font-display text-[#2a2a2a] text-xs">
+          <p className="font-display text-[#666] text-xs">
             Built with React <span style={{ color: '#64ffda' }}>·</span> {new Date().getFullYear()}
           </p>
         </div>
@@ -1207,7 +1207,7 @@ export default function App() {
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: GLOBAL_STYLES }} />
-      <div style={{ background: '#0a0a0a' }}>
+      <div style={{ background: '#111111' }}>
         <Nav />
         <main>
           <Hero />
