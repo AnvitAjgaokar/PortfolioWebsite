@@ -178,6 +178,10 @@ const GLOBAL_STYLES = `
   html { scroll-behavior: smooth; }
   body {
     background: #111111;
+    background-image:
+      radial-gradient(ellipse 90% 35% at 50% 0%, rgba(100,255,218,0.08) 0%, transparent 100%),
+      radial-gradient(ellipse 55% 25% at 85% 55%, rgba(100,255,218,0.05) 0%, transparent 100%),
+      radial-gradient(ellipse 60% 20% at 15% 80%, rgba(100,255,218,0.04) 0%, transparent 100%);
     color: #d4d4d4;
     font-family: 'Inter', system-ui, sans-serif;
     margin: 0; padding: 0;
@@ -203,8 +207,8 @@ const GLOBAL_STYLES = `
 
   .hero-bg {
     background-image:
-      linear-gradient(rgba(100,255,218,0.035) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(100,255,218,0.035) 1px, transparent 1px);
+      linear-gradient(rgba(100,255,218,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(100,255,218,0.03) 1px, transparent 1px);
     background-size: 80px 80px;
   }
 
@@ -225,7 +229,7 @@ const GLOBAL_STYLES = `
 
   /* Cards */
   .card {
-    background: #181818;
+    background: linear-gradient(160deg, #1d1d1d 0%, #161616 100%);
     border: 1px solid #272727;
     transition: transform 0.3s cubic-bezier(0.16,1,0.3,1),
                 border-color 0.3s ease,
@@ -233,8 +237,11 @@ const GLOBAL_STYLES = `
   }
   .card:hover {
     transform: translateY(-5px);
-    border-color: rgba(100,255,218,0.3);
-    box-shadow: 0 12px 40px rgba(100,255,218,0.05);
+    border-color: rgba(100,255,218,0.22);
+    box-shadow:
+      0 -1px 0 rgba(100,255,218,0.38),
+      0 20px 50px rgba(0,0,0,0.35),
+      0 0 60px rgba(100,255,218,0.045);
   }
 
   /* Skill tags */
@@ -297,7 +304,7 @@ const GLOBAL_STYLES = `
   /* Ghost section numbers */
   .ghost-number {
     font-family: 'Space Mono', monospace;
-    font-size: clamp(4.5rem, 11vw, 8.5rem);
+    font-size: clamp(4rem, 12vw, 10rem);
     font-weight: 700;
     color: #111;
     line-height: 1;
@@ -308,7 +315,7 @@ const GLOBAL_STYLES = `
 
   /* Achievement cards */
   .achievement-card {
-    background: #161616;
+    background: linear-gradient(150deg, #1c1c1c 0%, #131313 100%);
     border: 1px solid #272727;
     position: relative;
     overflow: hidden;
@@ -317,12 +324,14 @@ const GLOBAL_STYLES = `
   .achievement-card::before {
     content: '';
     position: absolute; inset: 0;
-    background: linear-gradient(135deg, rgba(100,255,218,0.04) 0%, transparent 55%);
+    background: linear-gradient(135deg, rgba(100,255,218,0.16) 0%, rgba(100,255,218,0.06) 38%, transparent 65%);
     pointer-events: none;
   }
   .achievement-card:hover {
-    border-color: rgba(100,255,218,0.35);
-    box-shadow: 0 0 40px rgba(100,255,218,0.06);
+    border-color: rgba(100,255,218,0.3);
+    box-shadow:
+      0 -1px 0 rgba(100,255,218,0.3),
+      0 0 50px rgba(100,255,218,0.07);
   }
 
   /* Tab active state */
@@ -337,6 +346,32 @@ const GLOBAL_STYLES = `
     position: absolute; left: 0; top: 8px; bottom: 0;
     width: 1px;
     background: linear-gradient(to bottom, #64ffda 0%, #1a1a1a 100%);
+  }
+
+  /* Prevent horizontal overflow at every breakpoint */
+  html, body { overflow-x: hidden; max-width: 100%; }
+
+  /* Touch-friendly active states (devices that lack hover) */
+  @media (hover: none) {
+    .card:active {
+      transform: scale(0.99);
+      border-color: rgba(100,255,218,0.22);
+      box-shadow: 0 -1px 0 rgba(100,255,218,0.35), 0 8px 24px rgba(0,0,0,0.3);
+    }
+    .skill-tag:active { background: rgba(100,255,218,0.07); border-color: rgba(100,255,218,0.4); color: #64ffda; }
+    .social-icon:active { color: #64ffda; }
+    .nav-link:active { color: #e8e8e8; }
+  }
+
+  /* Respect user's motion preference */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+    .fade-up { opacity: 1 !important; transform: none !important; }
+    .cursor-blink { animation: none !important; opacity: 1; }
   }
 `;
 
@@ -434,14 +469,22 @@ function TechChip({ label }) {
 function SectionHeader({ number, title, subtitle }) {
   const [ref, inView] = useInView();
   return (
-    <div ref={ref} className={`fade-up ${inView ? 'in-view' : ''} mb-16 relative`}>
+    <div ref={ref} className={`fade-up ${inView ? 'in-view' : ''} mb-10 sm:mb-16 relative`}>
       <div className="ghost-number absolute -top-4 right-0 leading-none select-none">{number}</div>
-      <p className="font-display text-[#64ffda] text-xs tracking-widest uppercase mb-3">
+      <p
+        className="font-display text-xs tracking-widest uppercase mb-3"
+        style={{
+          background: 'linear-gradient(90deg, #64ffda 0%, rgba(100,255,218,0.55) 100%)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+          backgroundClip: 'text',
+        }}
+      >
         {`// ${number}`}
       </p>
       <h2
         className="font-display font-bold text-[#e8e8e8] leading-tight"
-        style={{ fontSize: 'clamp(1.9rem, 4.5vw, 3rem)' }}
+        style={{ fontSize: 'clamp(1.8rem, 4vw, 3rem)' }}
       >
         {title}
       </h2>
@@ -494,12 +537,14 @@ function Nav() {
       <nav
         style={{
           transform: hidden ? 'translateY(-100%)' : 'translateY(0)',
-          background: scrolled ? 'rgba(10,10,10,0.9)' : 'transparent',
-          backdropFilter: scrolled ? 'blur(18px)' : 'none',
-          borderBottom: scrolled ? '1px solid #191919' : '1px solid transparent',
+          background: scrolled
+            ? 'linear-gradient(180deg, rgba(12,12,12,0.97) 0%, rgba(10,10,10,0.88) 100%)'
+            : 'transparent',
+          backdropFilter: scrolled ? 'blur(20px) saturate(1.2)' : 'none',
+          borderBottom: scrolled ? '1px solid rgba(100,255,218,0.06)' : '1px solid transparent',
           transition: 'transform 0.35s ease, background 0.35s ease, backdrop-filter 0.35s ease',
         }}
-        className="fixed top-0 left-0 right-0 z-50 px-6 lg:px-12"
+        className="fixed top-0 left-0 right-0 z-50 px-4 sm:px-6 lg:px-12"
       >
         <div className="max-w-6xl mx-auto flex items-center justify-between h-16">
           <button
@@ -528,7 +573,7 @@ function Nav() {
             </a>
             <button
               onClick={() => setMobileOpen(o => !o)}
-              className="md:hidden text-[#777] hover:text-[#e8e8e8] transition-colors bg-transparent border-0 cursor-pointer p-1"
+              className="md:hidden text-[#777] hover:text-[#e8e8e8] transition-colors bg-transparent border-0 cursor-pointer p-2.5 -mr-1"
             >
               {mobileOpen ? <X size={21} /> : <Menu size={21} />}
             </button>
@@ -552,7 +597,7 @@ function Nav() {
           <button
             key={l.href}
             onClick={() => scrollTo(l.href)}
-            className="font-display text-2xl text-[#666] hover:text-[#64ffda] transition-colors bg-transparent border-0 cursor-pointer"
+            className="font-display text-2xl text-[#888] hover:text-[#64ffda] active:text-[#64ffda] transition-colors bg-transparent border-0 cursor-pointer min-h-[48px] px-8 flex items-center justify-center"
           >
             {l.label}
           </button>
@@ -584,15 +629,29 @@ function Hero() {
 
   return (
     <section id="hero" className="hero-bg relative min-h-screen flex items-center overflow-hidden">
-      {/* Radial ambient */}
+      {/* Primary bloom — bleeds behind the headline text */}
       <div style={{
-        position: 'absolute', top: '15%', left: '-5%',
-        width: '55vw', height: '55vw',
-        background: 'radial-gradient(ellipse, rgba(100,255,218,0.045) 0%, transparent 68%)',
+        position: 'absolute', top: '8%', left: '-10%',
+        width: '70vw', height: '70vw',
+        background: 'radial-gradient(ellipse at 38% 48%, rgba(100,255,218,0.18) 0%, rgba(100,255,218,0.07) 38%, transparent 68%)',
+        pointerEvents: 'none',
+      }} />
+      {/* Secondary bloom — upper-right, atmospheric fill */}
+      <div style={{
+        position: 'absolute', top: '-15%', right: '-8%',
+        width: '50vw', height: '50vw',
+        background: 'radial-gradient(ellipse at 55% 42%, rgba(100,255,218,0.10) 0%, transparent 62%)',
+        pointerEvents: 'none',
+      }} />
+      {/* Bottom section fade */}
+      <div style={{
+        position: 'absolute', bottom: 0, left: 0, right: 0,
+        height: '220px',
+        background: 'linear-gradient(to bottom, transparent 0%, rgba(17,17,17,0.75) 100%)',
         pointerEvents: 'none',
       }} />
 
-      <div className="max-w-6xl mx-auto px-6 lg:px-12 pt-28 pb-20 w-full">
+      <div className="max-w-6xl mx-auto px-5 sm:px-8 lg:px-12 pt-24 sm:pt-28 pb-16 sm:pb-20 w-full">
         {/* Label */}
         <div {...fade('0.1s')} className={`${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-7'} flex items-center gap-3 mb-5`} style={{ transition: 'opacity 0.7s ease, transform 0.7s ease', transitionDelay: '0.1s' }}>
           <div className="w-8 h-px" style={{ background: '#64ffda' }} />
@@ -604,7 +663,7 @@ function Hero() {
         {/* Name */}
         <h1
           className={`font-display font-bold leading-none text-[#e8e8e8] mb-4 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-7'}`}
-          style={{ fontSize: 'clamp(3.8rem,11vw,7.5rem)', transition: 'opacity 0.7s ease, transform 0.7s ease', transitionDelay: '0.25s' }}
+          style={{ fontSize: 'clamp(2.5rem, 8vw, 6.5rem)', transition: 'opacity 0.7s ease, transform 0.7s ease', transitionDelay: '0.25s' }}
         >
           {meta.name}
         </h1>
@@ -638,19 +697,19 @@ function Hero() {
 
         {/* CTAs */}
         <div
-          className={`flex flex-wrap gap-4 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-7'}`}
+          className={`flex flex-col sm:flex-row gap-3 sm:gap-4 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-7'}`}
           style={{ transition: 'opacity 0.7s ease, transform 0.7s ease', transitionDelay: '0.7s' }}
         >
           <button
             onClick={() => document.querySelector('#projects')?.scrollIntoView({ behavior: 'smooth' })}
-            className="font-display text-xs font-bold px-8 py-3.5 hover:opacity-90 transition-opacity cursor-pointer border-0"
+            className="w-full sm:w-auto font-display text-xs font-bold px-8 py-3.5 hover:opacity-90 transition-opacity cursor-pointer border-0 min-h-[48px]"
             style={{ background: '#64ffda', color: '#0a0a0a' }}
           >
             View Work
           </button>
           <button
             onClick={() => document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' })}
-            className="font-display text-xs px-8 py-3.5 text-[#666] hover:text-[#64ffda] transition-colors cursor-pointer bg-transparent"
+            className="w-full sm:w-auto font-display text-xs px-8 py-3.5 text-[#888] hover:text-[#64ffda] transition-colors cursor-pointer bg-transparent min-h-[48px]"
             style={{ border: '1px solid #2a2a2a' }}
           >
             Contact Me
@@ -659,7 +718,7 @@ function Hero() {
 
         {/* Scroll indicator */}
         <div
-          className={`flex items-center gap-3 mt-20 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-7'}`}
+          className={`flex items-center gap-3 mt-12 sm:mt-20 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-7'}`}
           style={{ transition: 'opacity 0.7s ease, transform 0.7s ease', transitionDelay: '1s' }}
         >
           <div className="w-px h-10 bg-gradient-to-b from-transparent" style={{ backgroundImage: 'linear-gradient(to bottom, transparent, #64ffda)' }} />
@@ -673,7 +732,7 @@ function Hero() {
       </div>
 
       {/* Bottom-right meta */}
-      <div className="absolute bottom-8 right-6 lg:right-12 flex flex-col items-end gap-2">
+      <div className="absolute bottom-8 right-6 lg:right-12 hidden sm:flex flex-col items-end gap-2">
         <span className="font-display text-[#777] text-xs tracking-widest flex items-center gap-1.5">
           <MapPin size={9} style={{ color: '#666' }} />{meta.location}
         </span>
@@ -695,13 +754,13 @@ function About() {
   const [hovered, setHovered] = useState(false);
 
   return (
-    <section id="about" className="py-28 max-w-6xl mx-auto px-6 lg:px-12">
+    <section id="about" className="py-16 sm:py-24 lg:py-28 max-w-6xl mx-auto px-5 sm:px-8 lg:px-12">
       <SectionHeader number="01" title="About Me" />
-      <div className="grid md:grid-cols-2 gap-16 items-start">
+      <div className="grid md:grid-cols-2 gap-10 lg:gap-16 items-start">
         {/* Avatar box */}
         <div ref={boxRef} className={`fade-up ${boxInView ? 'in-view' : ''}`}>
           <div
-            className="relative aspect-square max-w-xs mx-auto md:mx-0 cursor-default"
+            className="relative aspect-square max-w-[200px] sm:max-w-xs mx-auto md:mx-0 cursor-default"
             style={{
               border: hovered ? '1px solid rgba(100,255,218,0.45)' : '1px solid #1e1e1e',
               background: '#0b0b0b',
@@ -790,11 +849,11 @@ function ExperienceItem({ job, index }) {
     >
       {/* Timeline dot */}
       <div
-        className="absolute -left-10 top-2 w-3 h-3 rounded-full"
+        className="absolute -left-7 sm:-left-10 top-2 w-3 h-3 rounded-full"
         style={{ border: '2px solid #64ffda', background: '#0a0a0a' }}
       />
 
-      <div className="card p-7">
+      <div className="card p-4 sm:p-7">
         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-5">
           <div>
             <h3 className="font-display text-base font-bold text-[#e8e8e8]">{job.role}</h3>
@@ -831,12 +890,12 @@ function ExperienceItem({ job, index }) {
 function Experience() {
   const { experience } = portfolioData;
   return (
-    <section id="experience" style={{ background: '#0e0e0e' }} className="py-28">
-      <div className="max-w-6xl mx-auto px-6 lg:px-12">
+    <section id="experience" style={{ background: 'linear-gradient(180deg, #080808 0%, #1a1a1a 50%, #080808 100%)' }} className="py-16 sm:py-24 lg:py-28">
+      <div className="max-w-6xl mx-auto px-5 sm:px-8 lg:px-12">
         <SectionHeader number="02" title="Experience" subtitle="Where I've shipped." />
-        <div className="relative pl-8">
+        <div className="relative pl-5 sm:pl-8">
           <div className="timeline-line" />
-          <div className="space-y-12">
+          <div className="space-y-8 sm:space-y-12">
             {experience.map((job, i) => (
               <ExperienceItem key={job.company} job={job} index={i} />
             ))}
@@ -877,7 +936,7 @@ function SkillGroup({ group, index }) {
 function Skills() {
   const { skills } = portfolioData;
   return (
-    <section id="skills" className="py-28 max-w-6xl mx-auto px-6 lg:px-12">
+    <section id="skills" className="py-16 sm:py-24 lg:py-28 max-w-6xl mx-auto px-5 sm:px-8 lg:px-12">
       <SectionHeader number="03" title="Skills" subtitle="Tools I reach for." />
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {skills.map((group, i) => <SkillGroup key={group.category} group={group} index={i} />)}
@@ -940,7 +999,7 @@ function ProfessionalProjectCard({ project, index }) {
   return (
     <div
       ref={ref}
-      className={`fade-up ${inView ? 'in-view' : ''} card p-7 flex flex-col`}
+      className={`fade-up ${inView ? 'in-view' : ''} card p-4 sm:p-7 flex flex-col`}
       style={{ transitionDelay: `${index * 0.15}s` }}
     >
       <h3 className="font-display text-sm font-bold text-[#e8e8e8] mb-2">{project.name}</h3>
@@ -981,12 +1040,12 @@ function Projects() {
   const [tab, setTab] = useState('personal');
 
   return (
-    <section id="projects" style={{ background: '#0e0e0e' }} className="py-28">
-      <div className="max-w-6xl mx-auto px-6 lg:px-12">
+    <section id="projects" style={{ background: 'linear-gradient(180deg, #080808 0%, #1a1a1a 50%, #080808 100%)' }} className="py-16 sm:py-24 lg:py-28">
+      <div className="max-w-6xl mx-auto px-5 sm:px-8 lg:px-12">
         <SectionHeader number="04" title="Projects" subtitle="Things I've built." />
 
         {/* Tab switcher */}
-        <div className="flex mb-10 w-fit" style={{ border: '1px solid #1c1c1c' }}>
+        <div className="flex mb-8 sm:mb-10 w-full sm:w-fit" style={{ border: '1px solid #1c1c1c' }}>
           {[
             { key: 'personal', label: 'Personal / OSS' },
             { key: 'professional', label: 'Professional' },
@@ -994,8 +1053,8 @@ function Projects() {
             <button
               key={t.key}
               onClick={() => setTab(t.key)}
-              className={`font-display text-xs px-6 py-2.5 border-0 cursor-pointer transition-all ${
-                tab === t.key ? 'tab-active' : 'text-[#777] hover:text-[#777] bg-transparent'
+              className={`flex-1 sm:flex-none font-display text-xs px-6 py-3 sm:py-2.5 min-h-[48px] sm:min-h-0 border-0 cursor-pointer transition-all ${
+                tab === t.key ? 'tab-active' : 'text-[#777] hover:text-[#aaa] bg-transparent'
               }`}
             >
               {t.label}
@@ -1041,12 +1100,12 @@ function AchievementItem({ achievement, index }) {
   return (
     <div
       ref={ref}
-      className={`fade-up ${inView ? 'in-view' : ''} achievement-card p-8`}
+      className={`fade-up ${inView ? 'in-view' : ''} achievement-card p-5 sm:p-8`}
       style={{ transitionDelay: `${index * 0.12}s` }}
     >
       <div
         className="font-display font-bold mb-2 leading-none"
-        style={{ fontSize: 'clamp(2.2rem,4.5vw,3.5rem)', color: '#64ffda' }}
+        style={{ fontSize: 'clamp(2rem, 6vw, 3.5rem)', color: '#64ffda' }}
       >
         {display}
       </div>
@@ -1059,7 +1118,7 @@ function AchievementItem({ achievement, index }) {
 function Achievements() {
   const { achievements } = portfolioData;
   return (
-    <section id="achievements" className="py-28 max-w-6xl mx-auto px-6 lg:px-12">
+    <section id="achievements" className="py-16 sm:py-24 lg:py-28 max-w-6xl mx-auto px-5 sm:px-8 lg:px-12">
       <SectionHeader number="05" title="By The Numbers" subtitle="What I've shipped, measured." />
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {achievements.map((item, i) => (
@@ -1127,10 +1186,10 @@ function BlogCard({ post, index }) {
 function Blog() {
   const { blog } = portfolioData;
   return (
-    <section id="blog" style={{ background: '#0e0e0e' }} className="py-28">
-      <div className="max-w-6xl mx-auto px-6 lg:px-12">
+    <section id="blog" style={{ background: 'linear-gradient(180deg, #080808 0%, #1a1a1a 50%, #080808 100%)' }} className="py-16 sm:py-24 lg:py-28">
+      <div className="max-w-6xl mx-auto px-5 sm:px-8 lg:px-12">
         <SectionHeader number="06" title="Writing" subtitle="Thoughts worth sharing." />
-        <div className="grid md:grid-cols-3 gap-4">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {blog.map((post, i) => <BlogCard key={post.title} post={post} index={i} />)}
         </div>
       </div>
@@ -1153,10 +1212,10 @@ function Footer() {
   ];
 
   return (
-    <footer id="contact" style={{ background: '#0d0d0d', borderTop: '1px solid #252525' }}>
-      <div className="max-w-6xl mx-auto px-6 lg:px-12 py-24">
+    <footer id="contact" style={{ background: 'linear-gradient(180deg, #0e0e0e 0%, #050505 55%, #020202 100%)', borderTop: '1px solid rgba(100,255,218,0.07)' }}>
+      <div className="max-w-6xl mx-auto px-5 sm:px-8 lg:px-12 py-14 sm:py-20 lg:py-24">
         {/* CTA block */}
-        <div ref={ref} className={`fade-up ${inView ? 'in-view' : ''} text-center mb-20`}>
+        <div ref={ref} className={`fade-up ${inView ? 'in-view' : ''} text-center mb-12 sm:mb-16 lg:mb-20`}>
           <p className="font-display text-[#777] text-xs uppercase tracking-widest mb-4">
             Currently open to new opportunities
           </p>
@@ -1176,7 +1235,7 @@ function Footer() {
           </a>
         </div>
 
-        <div className="w-full h-px mb-12" style={{ background: '#111' }} />
+        <div className="w-full h-px mb-12" style={{ background: 'linear-gradient(90deg, transparent 0%, #333 20%, rgba(100,255,218,0.28) 50%, #333 80%, transparent 100%)' }} />
 
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           <span className="font-display text-xl font-bold text-[#666]">
@@ -1185,8 +1244,8 @@ function Footer() {
 
           <div className="flex items-center gap-6">
             {SOCIALS.map(({ icon: Icon, href, label }) => (
-              <a key={label} href={href} target="_blank" rel="noreferrer" aria-label={label} className="social-icon">
-                <Icon size={17} />
+              <a key={label} href={href} target="_blank" rel="noreferrer" aria-label={label} className="social-icon p-2.5 -m-2.5">
+                <Icon size={18} />
               </a>
             ))}
           </div>
