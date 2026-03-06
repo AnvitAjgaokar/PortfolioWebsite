@@ -612,14 +612,10 @@ function CustomCursor() {
     // Only attach on desktop (hover: hover, pointer: fine)
     if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
 
-    const dot = dotRef.current;
-    const ringEl = ringRef.current;
-    if (!dot || !ringEl) return;
-
     const onMove = (e) => {
       mouse.current = { x: e.clientX, y: e.clientY };
     };
-    window.addEventListener('mousemove', onMove, { passive: true });
+    document.addEventListener('pointermove', onMove, { passive: true });
 
     const lerp = (a, b, t) => a + (b - a) * t;
 
@@ -627,15 +623,19 @@ function CustomCursor() {
       ring.current.x = lerp(ring.current.x, mouse.current.x, 0.12);
       ring.current.y = lerp(ring.current.y, mouse.current.y, 0.12);
 
-      dot.style.transform = `translate(${mouse.current.x - 4}px, ${mouse.current.y - 4}px)`;
-      ringEl.style.transform = `translate(${ring.current.x - 16}px, ${ring.current.y - 16}px)`;
+      if (dotRef.current) {
+        dotRef.current.style.transform = `translate(${mouse.current.x - 4}px, ${mouse.current.y - 4}px)`;
+      }
+      if (ringRef.current) {
+        ringRef.current.style.transform = `translate(${ring.current.x - 16}px, ${ring.current.y - 16}px)`;
+      }
 
       raf.current = requestAnimationFrame(tick);
     };
     raf.current = requestAnimationFrame(tick);
 
     return () => {
-      window.removeEventListener('mousemove', onMove);
+      document.removeEventListener('pointermove', onMove);
       cancelAnimationFrame(raf.current);
     };
   }, []);
