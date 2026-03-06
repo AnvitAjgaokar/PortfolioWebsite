@@ -216,6 +216,7 @@ const GLOBAL_STYLES = `
   .fade-up {
     opacity: 0;
     transform: translateY(32px);
+    will-change: transform, opacity;
     transition: opacity 0.65s cubic-bezier(0.16,1,0.3,1),
                 transform 0.65s cubic-bezier(0.16,1,0.3,1);
   }
@@ -251,12 +252,13 @@ const GLOBAL_STYLES = `
     color: #b8b8b8;
     font-family: 'Space Mono', monospace;
     cursor: default;
-    transition: background 0.2s, border-color 0.2s, color 0.2s;
+    transition: background 0.2s, border-color 0.2s, color 0.2s, transform 0.2s;
   }
   .skill-tag:hover {
     background: rgba(100,255,218,0.07);
     border-color: rgba(100,255,218,0.4);
     color: #64ffda;
+    transform: scale(1.05);
   }
 
   /* Tech chips */
@@ -299,7 +301,7 @@ const GLOBAL_STYLES = `
     transition: color 0.2s, transform 0.2s;
     display: inline-flex;
   }
-  .social-icon:hover { color: #64ffda; transform: translateY(-2px); }
+  .social-icon:hover { color: #64ffda; transform: rotate(10deg) scale(1.15); }
 
   /* Ghost section numbers */
   .ghost-number {
@@ -319,7 +321,7 @@ const GLOBAL_STYLES = `
     border: 1px solid #272727;
     position: relative;
     overflow: hidden;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
   }
   .achievement-card::before {
     content: '';
@@ -332,6 +334,7 @@ const GLOBAL_STYLES = `
     box-shadow:
       0 -1px 0 rgba(100,255,218,0.3),
       0 0 50px rgba(100,255,218,0.07);
+    transform: scale(1.02);
   }
 
   /* Tab active state */
@@ -345,7 +348,7 @@ const GLOBAL_STYLES = `
   .timeline-line {
     position: absolute; left: 0; top: 8px; bottom: 0;
     width: 1px;
-    background: linear-gradient(to bottom, #64ffda 0%, #1a1a1a 100%);
+    overflow: hidden;
   }
 
   /* Prevent horizontal overflow at every breakpoint */
@@ -370,8 +373,96 @@ const GLOBAL_STYLES = `
       animation-iteration-count: 1 !important;
       transition-duration: 0.01ms !important;
     }
-    .fade-up { opacity: 1 !important; transform: none !important; }
+    .fade-up, .anim-slide-left, .anim-pop, .anim-fade { opacity: 1 !important; transform: none !important; }
+    .timeline-line-inner { transform: scaleY(1) !important; }
     .cursor-blink { animation: none !important; opacity: 1; }
+  }
+
+  /* ── Custom cursor (desktop only) ─────────────────────── */
+  @media (hover: hover) and (pointer: fine) {
+    html, body { cursor: none !important; }
+    a, button, [role="button"] { cursor: none !important; }
+  }
+  #cursor-dot {
+    position: fixed; top: 0; left: 0; pointer-events: none; z-index: 99999;
+    width: 8px; height: 8px; border-radius: 50%;
+    background: #64ffda;
+    will-change: transform;
+  }
+  #cursor-ring {
+    position: fixed; top: 0; left: 0; pointer-events: none; z-index: 99998;
+    width: 32px; height: 32px; border-radius: 50%;
+    border: 1.5px solid rgba(100,255,218,0.5);
+    will-change: transform;
+  }
+
+  /* ── Scroll animation variants ────────────────────────── */
+  .anim-slide-left {
+    opacity: 0; transform: translateX(-40px);
+    will-change: transform, opacity;
+    transition: opacity 0.65s cubic-bezier(0.16,1,0.3,1), transform 0.65s cubic-bezier(0.16,1,0.3,1);
+  }
+  .anim-slide-left.in-view { opacity: 1; transform: translateX(0); }
+
+  .anim-pop {
+    opacity: 0; transform: scale(0.92);
+    will-change: transform, opacity;
+    transition: opacity 0.45s ease-out, transform 0.45s ease-out;
+  }
+  .anim-pop.in-view { opacity: 1; transform: scale(1); }
+
+  .anim-fade {
+    opacity: 0;
+    transition: opacity 0.7s ease;
+  }
+  .anim-fade.in-view { opacity: 1; }
+
+  /* Timeline draw animation */
+  .timeline-line-inner {
+    position: absolute; inset: 0;
+    background: linear-gradient(to bottom, #64ffda 0%, #1a1a1a 100%);
+    transform-origin: top;
+    transform: scaleY(0);
+    transition: transform 0.9s cubic-bezier(0.16,1,0.3,1);
+  }
+  .timeline-line-inner.in-view { transform: scaleY(1); }
+
+  /* Timeline dot pulse */
+  @keyframes pulse-ring {
+    0%   { box-shadow: 0 0 0 0 rgba(100,255,218,0.5); }
+    70%  { box-shadow: 0 0 0 6px rgba(100,255,218,0); }
+    100% { box-shadow: 0 0 0 0 rgba(100,255,218,0); }
+  }
+  .timeline-dot:hover { animation: pulse-ring 1s ease-out; }
+
+  /* CTA shimmer button */
+  .btn-shine {
+    position: relative; overflow: hidden;
+  }
+  .btn-shine::after {
+    content: '';
+    position: absolute; top: 0; left: -100%;
+    width: 60%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent);
+    transition: left 0.5s ease;
+  }
+  .btn-shine:hover::after { left: 150%; }
+
+  /* Link icon slide */
+  .link-icon { transition: transform 0.2s ease, color 0.2s; }
+  .link-icon:hover { transform: translate(2px, -2px); color: #64ffda; }
+
+  /* Platform badge */
+  .platform-badge {
+    transition: background 0.2s, color 0.2s, transform 0.2s;
+  }
+  .platform-badge:hover { transform: scale(1.06); }
+
+  /* Mobile: reduce translate distances */
+  @media (max-width: 640px) {
+    .fade-up { transform: translateY(20px); }
+    .anim-slide-left { transform: translateX(-22px); }
+    .anim-pop { transform: scale(0.93); }
   }
 `;
 
@@ -385,7 +476,7 @@ function useInView(threshold = 0.12) {
     const el = ref.current;
     if (!el) return;
     const observer = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) { setInView(true); observer.unobserve(el); } },
+      ([entry]) => { setInView(entry.isIntersecting); },
       { threshold }
     );
     observer.observe(el);
@@ -508,6 +599,54 @@ const NAV_LINKS = [
   { label: 'Blog', href: '#blog' },
   { label: 'Contact', href: '#contact' },
 ];
+
+// ── Custom Cursor ──────────────────────────────────────────────────────────────
+function CustomCursor() {
+  const dotRef = useRef(null);
+  const ringRef = useRef(null);
+  const mouse = useRef({ x: -100, y: -100 });
+  const ring = useRef({ x: -100, y: -100 });
+  const raf = useRef(null);
+
+  useEffect(() => {
+    // Only attach on desktop (hover: hover, pointer: fine)
+    if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+
+    const dot = dotRef.current;
+    const ringEl = ringRef.current;
+    if (!dot || !ringEl) return;
+
+    const onMove = (e) => {
+      mouse.current = { x: e.clientX, y: e.clientY };
+    };
+    window.addEventListener('mousemove', onMove, { passive: true });
+
+    const lerp = (a, b, t) => a + (b - a) * t;
+
+    const tick = () => {
+      ring.current.x = lerp(ring.current.x, mouse.current.x, 0.12);
+      ring.current.y = lerp(ring.current.y, mouse.current.y, 0.12);
+
+      dot.style.transform = `translate(${mouse.current.x - 4}px, ${mouse.current.y - 4}px)`;
+      ringEl.style.transform = `translate(${ring.current.x - 16}px, ${ring.current.y - 16}px)`;
+
+      raf.current = requestAnimationFrame(tick);
+    };
+    raf.current = requestAnimationFrame(tick);
+
+    return () => {
+      window.removeEventListener('mousemove', onMove);
+      cancelAnimationFrame(raf.current);
+    };
+  }, []);
+
+  return (
+    <>
+      <div id="cursor-dot" ref={dotRef} />
+      <div id="cursor-ring" ref={ringRef} />
+    </>
+  );
+}
 
 function Nav() {
   const [scrolled, setScrolled] = useState(false);
@@ -702,7 +841,7 @@ function Hero() {
         >
           <button
             onClick={() => document.querySelector('#projects')?.scrollIntoView({ behavior: 'smooth' })}
-            className="w-full sm:w-auto font-display text-xs font-bold px-8 py-3.5 hover:opacity-90 transition-opacity cursor-pointer border-0 min-h-[48px]"
+            className="btn-shine w-full sm:w-auto font-display text-xs font-bold px-8 py-3.5 hover:opacity-90 transition-opacity cursor-pointer border-0 min-h-[48px]"
             style={{ background: '#64ffda', color: '#0a0a0a' }}
           >
             View Work
@@ -758,7 +897,7 @@ function About() {
       <SectionHeader number="01" title="About Me" />
       <div className="grid md:grid-cols-2 gap-10 lg:gap-16 items-start">
         {/* Avatar box */}
-        <div ref={boxRef} className={`fade-up ${boxInView ? 'in-view' : ''}`}>
+        <div ref={boxRef} className={`anim-slide-left ${boxInView ? 'in-view' : ''}`}>
           <div
             className="relative aspect-square max-w-[200px] sm:max-w-xs mx-auto md:mx-0 cursor-default"
             style={{
@@ -844,12 +983,12 @@ function ExperienceItem({ job, index }) {
   return (
     <div
       ref={ref}
-      className={`fade-up ${inView ? 'in-view' : ''} relative`}
+      className={`anim-slide-left ${inView ? 'in-view' : ''} relative`}
       style={{ transitionDelay: `${index * 0.15}s` }}
     >
       {/* Timeline dot */}
       <div
-        className="absolute -left-7 sm:-left-10 top-2 w-3 h-3 rounded-full"
+        className="timeline-dot absolute -left-7 sm:-left-10 top-2 w-3 h-3 rounded-full"
         style={{ border: '2px solid #64ffda', background: '#0a0a0a' }}
       />
 
@@ -889,12 +1028,15 @@ function ExperienceItem({ job, index }) {
 
 function Experience() {
   const { experience } = portfolioData;
+  const [lineRef, lineInView] = useInView(0.05);
   return (
     <section id="experience" style={{ background: 'linear-gradient(180deg, #080808 0%, #1a1a1a 50%, #080808 100%)' }} className="py-16 sm:py-24 lg:py-28">
       <div className="max-w-6xl mx-auto px-5 sm:px-8 lg:px-12">
         <SectionHeader number="02" title="Experience" subtitle="Where I've shipped." />
         <div className="relative pl-5 sm:pl-8">
-          <div className="timeline-line" />
+          <div ref={lineRef} className="timeline-line">
+            <div className={`timeline-line-inner ${lineInView ? 'in-view' : ''}`} />
+          </div>
           <div className="space-y-8 sm:space-y-12">
             {experience.map((job, i) => (
               <ExperienceItem key={job.company} job={job} index={i} />
@@ -960,12 +1102,12 @@ function PersonalProjectCard({ project, index }) {
         <h3 className="font-display text-sm font-bold text-[#e8e8e8]">{project.name}</h3>
         <div className="flex gap-2.5 shrink-0 ml-3">
           {project.githubUrl && (
-            <a href={project.githubUrl} target="_blank" rel="noreferrer" className="social-icon">
+            <a href={project.githubUrl} target="_blank" rel="noreferrer" className="link-icon social-icon">
               <Github size={15} />
             </a>
           )}
           {project.liveUrl && (
-            <a href={project.liveUrl} target="_blank" rel="noreferrer" className="social-icon">
+            <a href={project.liveUrl} target="_blank" rel="noreferrer" className="link-icon social-icon">
               <ExternalLink size={15} />
             </a>
           )}
@@ -1100,7 +1242,7 @@ function AchievementItem({ achievement, index }) {
   return (
     <div
       ref={ref}
-      className={`fade-up ${inView ? 'in-view' : ''} achievement-card p-5 sm:p-8`}
+      className={`anim-pop ${inView ? 'in-view' : ''} achievement-card p-5 sm:p-8`}
       style={{ transitionDelay: `${index * 0.12}s` }}
     >
       <div
@@ -1152,14 +1294,14 @@ function BlogCard({ post, index }) {
     >
       <div className="flex items-center justify-between mb-4">
         <span
-          className="font-display text-[10px] px-2.5 py-1"
+          className="platform-badge font-display text-[10px] px-2.5 py-1"
           style={{ background: ps.bg, color: ps.color, border: `1px solid ${ps.border}` }}
         >
           {post.platform}
         </span>
         <ArrowUpRight
           size={15}
-          className="transition-colors"
+          className="link-icon transition-colors"
           style={{ color: '#2a2a2a' }}
         />
       </div>
@@ -1203,6 +1345,18 @@ function Blog() {
 function Footer() {
   const { meta, social } = portfolioData;
   const [ref, inView] = useInView();
+  const [bottomRef, bottomInView] = useInView();
+  const socialsRef = useRef(null);
+
+  useEffect(() => {
+    if (!socialsRef.current) return;
+    const icons = socialsRef.current.querySelectorAll('[data-stagger]');
+    if (bottomInView) {
+      icons.forEach((el, i) => { el.style.transitionDelay = i * 80 + 'ms'; });
+    } else {
+      icons.forEach((el) => { el.style.transitionDelay = '0ms'; });
+    }
+  }, [bottomInView]);
 
   const SOCIALS = [
     { icon: Github,   href: social.github,           label: 'GitHub' },
@@ -1237,14 +1391,14 @@ function Footer() {
 
         <div className="w-full h-px mb-12" style={{ background: 'linear-gradient(90deg, transparent 0%, #333 20%, rgba(100,255,218,0.28) 50%, #333 80%, transparent 100%)' }} />
 
-        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+        <div ref={bottomRef} className={`anim-fade ${bottomInView ? 'in-view' : ''} flex flex-col md:flex-row items-center justify-between gap-6`}>
           <span className="font-display text-xl font-bold text-[#666]">
             {meta.initials}<span style={{ color: '#64ffda' }}>.</span>
           </span>
 
-          <div className="flex items-center gap-6">
+          <div ref={socialsRef} className="flex items-center gap-6">
             {SOCIALS.map(({ icon: Icon, href, label }) => (
-              <a key={label} href={href} target="_blank" rel="noreferrer" aria-label={label} className="social-icon p-2.5 -m-2.5">
+              <a key={label} data-stagger href={href} target="_blank" rel="noreferrer" aria-label={label} className={`social-icon fade-up ${bottomInView ? 'in-view' : ''} p-2.5 -m-2.5`}>
                 <Icon size={18} />
               </a>
             ))}
@@ -1266,6 +1420,7 @@ export default function App() {
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: GLOBAL_STYLES }} />
+      <CustomCursor />
       <div style={{ background: '#111111' }}>
         <Nav />
         <main>
