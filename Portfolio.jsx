@@ -1,172 +1,23 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
-  Github, Linkedin, Twitter, Mail, ExternalLink, ArrowUpRight,
+  Github, Linkedin, Twitter, Mail, ExternalLink, ArrowUpRight, ArrowUp,
   Menu, X, Code2, Database, Server, Cloud, Terminal, Clock,
   MapPin, ChevronRight,
 } from 'lucide-react';
 
+import meta         from './src/data/meta.js';
+import about        from './src/data/about.js';
+import experience   from './src/data/experience.js';
+import skills       from './src/data/skills.js';
+import projects     from './src/data/projects.js';
+import achievements from './src/data/achievements.js';
+import blog         from './src/data/blog.js';
+import social       from './src/data/social.js';
+
 // ================================================================
-// DATA LAYER — Edit all content here. Never touch JSX below.
+// DATA LAYER — edit files in src/data/ to update content.
 // ================================================================
-const portfolioData = {
-  meta: {
-    name: 'Alex Chen',
-    initials: 'AC',
-    title: 'Backend Engineer',
-    tagline: 'I build reliable, scalable systems that power products people love. Precision over speed. Always.',
-    email: 'alex.chen@example.com',
-    location: 'San Francisco, CA',
-    roles: ['Backend Engineer', 'API Architect', 'Systems Builder', 'Go Developer'],
-  },
-  about: {
-    bio: [
-      "I'm a backend engineer with ~2 years of professional experience building high-performance APIs and distributed systems. I specialize in Python and Go, and I care deeply about system design, clean architecture, and writing code that's as readable as it is fast.",
-      'My background spans fintech and SaaS — I\'ve shipped features that processed millions of daily transactions and built internal tooling that saved engineering teams hours every week. I thrive at the intersection of performance engineering and developer experience.',
-      "When I'm not optimizing database queries or designing REST contracts, I'm writing technical content, contributing to open source, or tinkering with side projects that scratch my own itches.",
-    ],
-    currently: 'Building core transaction services at a Series B fintech startup',
-    avatar: 'AC',
-    stats: [
-      { value: '2+', label: 'Years Exp.' },
-      { value: '10+', label: 'Projects' },
-      { value: '3+', label: 'Articles' },
-    ],
-  },
-  experience: [
-    {
-      company: 'Finova Technologies',
-      role: 'Backend Engineer',
-      duration: 'Jan 2024 – Present',
-      type: 'Full-time',
-      descriptions: [
-        'Designed and shipped a high-throughput transaction processing service in Go, handling 500K+ events/day with P99 latency under 50ms',
-        'Reduced API response times by 60% through strategic Redis caching, query optimization, and connection pooling',
-        'Led migration of 3 legacy Python services to a unified FastAPI architecture, improving maintainability and cutting error rates by 35%',
-        'Implemented async job queue using Celery + Redis, decoupling heavy workloads from the request lifecycle',
-      ],
-      techStack: ['Go', 'Python', 'FastAPI', 'PostgreSQL', 'Redis', 'Docker', 'AWS', 'Celery'],
-    },
-    {
-      company: 'DevSpark Labs',
-      role: 'Junior Backend Developer',
-      duration: 'Jun 2023 – Dec 2023',
-      type: 'Full-time',
-      descriptions: [
-        'Built REST APIs for a B2B SaaS product using Express.js and MongoDB, serving 50+ enterprise clients',
-        'Designed database schemas and wrote complex aggregation pipelines reducing reporting query times by 45%',
-        'Integrated third-party payment providers (Stripe, PayPal) with idempotent webhook handlers',
-        'Containerized the entire dev environment with Docker Compose, cutting new developer onboarding time in half',
-      ],
-      techStack: ['Node.js', 'Express.js', 'MongoDB', 'Docker', 'Stripe API', 'JWT', 'AWS S3'],
-    },
-  ],
-  skills: [
-    { category: 'Languages',         icon: 'Code2',    items: ['Python', 'Go', 'Node.js', 'TypeScript', 'SQL', 'Bash'] },
-    { category: 'Frameworks',        icon: 'Server',   items: ['FastAPI', 'Express.js', 'Django', 'Gin', 'Celery'] },
-    { category: 'Databases',         icon: 'Database', items: ['PostgreSQL', 'MongoDB', 'Redis', 'MySQL', 'Elasticsearch'] },
-    { category: 'DevOps & Cloud',    icon: 'Cloud',    items: ['Docker', 'AWS (EC2, S3, Lambda)', 'GitHub Actions', 'Nginx', 'CI/CD', 'Linux'] },
-    { category: 'Tools & Practices', icon: 'Terminal', items: ['REST API Design', 'System Design', 'Git', 'Postman', 'JWT/OAuth2', 'Microservices'] },
-  ],
-  projects: {
-    personal: [
-      {
-        name: 'Nexus CLI',
-        description: 'A developer productivity CLI tool written in Go that scaffolds backend projects with opinionated defaults — generates folder structures, Dockerfiles, Makefiles, and CI/CD templates in seconds.',
-        techStack: ['Go', 'Cobra', 'Docker', 'GitHub Actions'],
-        liveUrl: null,
-        githubUrl: '#',
-        highlight: '500+ GitHub stars',
-      },
-      {
-        name: 'FastAPI Boilerplate',
-        description: 'Production-ready FastAPI starter with JWT auth, async PostgreSQL, Redis caching, Celery task queue, Docker Compose, and a comprehensive test suite. Used as the base for 3+ production apps.',
-        techStack: ['Python', 'FastAPI', 'PostgreSQL', 'Redis', 'Docker', 'Pytest'],
-        liveUrl: null,
-        githubUrl: '#',
-        highlight: '1.2K+ GitHub forks',
-      },
-      {
-        name: 'Beacon Bot',
-        description: 'A Discord bot with an internal REST API that tracks developer activity, coding streaks, and sends personalized daily digests. Actively managing 3 communities with 2,000+ combined members.',
-        techStack: ['Python', 'Discord.py', 'FastAPI', 'MongoDB', 'Redis'],
-        liveUrl: '#',
-        githubUrl: '#',
-        highlight: '2,000+ active users',
-      },
-    ],
-    professional: [
-      {
-        name: 'Transaction Event Service',
-        description: 'Core financial event processing microservice at Finova Technologies. Ingests, validates, and routes 500K+ daily transaction events with exactly-once delivery guarantees and a full audit trail.',
-        techStack: ['Go', 'PostgreSQL', 'Redis', 'Kafka', 'Docker', 'AWS'],
-        impact: 'Handles $2M+ in daily transaction volume with 99.98% uptime',
-        highlight: '60% latency reduction',
-      },
-      {
-        name: 'Analytics Data Pipeline',
-        description: 'Batch + streaming ETL pipeline aggregating product usage metrics from 15+ microservices into a centralized analytics warehouse. Powers the executive dashboard and client-facing reports.',
-        techStack: ['Python', 'Celery', 'PostgreSQL', 'AWS S3', 'AWS Lambda', 'Pandas'],
-        impact: 'Reduced report generation time from 45 minutes to under 3 minutes',
-        highlight: '93% time reduction',
-      },
-    ],
-  },
-  achievements: [
-    {
-      metric: '60%',
-      title: 'API Latency Reduction',
-      description: 'Profiled and optimized critical endpoints via Redis caching, N+1 query elimination, and targeted DB index tuning',
-    },
-    {
-      metric: '45%',
-      title: 'Query Time Cut',
-      description: 'Rewrote complex aggregation queries and introduced partial indexes on high-traffic PostgreSQL tables',
-    },
-    {
-      metric: '3hrs',
-      title: 'Saved Per Week',
-      description: 'Automated the entire deploy pipeline with GitHub Actions, eliminating manual staging and production deploys',
-    },
-    {
-      metric: '99.98%',
-      title: 'Service Uptime',
-      description: 'Achieved via circuit breakers, health checks, graceful shutdown, and multi-AZ AWS deployment',
-    },
-  ],
-  blog: [
-    {
-      title: "REST vs GraphQL: A Backend Engineer's Honest Take",
-      platform: 'Medium',
-      url: '#',
-      date: 'Feb 2025',
-      readTime: '8 min read',
-      excerpt: "After building APIs in both paradigms, here's when I'd reach for GraphQL — and when REST is still the right call. Spoiler: it's almost always about your data access patterns.",
-    },
-    {
-      title: 'Docker in Production: 7 Mistakes I Made (And Fixed)',
-      platform: 'Dev.to',
-      url: '#',
-      date: 'Nov 2024',
-      readTime: '12 min read',
-      excerpt: 'From bloated images to improper secret management — a candid walkthrough of the Docker anti-patterns I shipped to production and how I cleaned them up.',
-    },
-    {
-      title: "PostgreSQL Indexing Isn't Magic — Here's How It Actually Works",
-      platform: 'Medium',
-      url: '#',
-      date: 'Aug 2024',
-      readTime: '10 min read',
-      excerpt: 'B-Tree, GiST, GIN, partial indexes — demystified with real EXPLAIN ANALYZE output and the exact decisions that cut my query times by 45%.',
-    },
-  ],
-  social: {
-    github: '#',
-    linkedin: '#',
-    twitter: '#',
-    email: 'alex.chen@example.com',
-    resume: '/resume.pdf',
-  },
-};
+const portfolioData = { meta, about, experience, skills, projects, achievements, blog, social };
 
 // ================================================================
 // GLOBAL STYLES (injected via <style> tag — no custom Tailwind config needed)
@@ -186,6 +37,11 @@ const GLOBAL_STYLES = `
     font-family: 'Inter', system-ui, sans-serif;
     margin: 0; padding: 0;
     -webkit-font-smoothing: antialiased;
+    -webkit-tap-highlight-color: transparent;
+  }
+  a, button, [role="button"] {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
   }
   ::-webkit-scrollbar { width: 3px; }
   ::-webkit-scrollbar-track { background: #111111; }
@@ -220,7 +76,7 @@ const GLOBAL_STYLES = `
     transition: opacity 0.65s cubic-bezier(0.16,1,0.3,1),
                 transform 0.65s cubic-bezier(0.16,1,0.3,1);
   }
-  .fade-up.in-view { opacity: 1; transform: translateY(0); }
+  .fade-up.in-view { opacity: 1; transform: translateY(0); will-change: auto; }
   .delay-1 { transition-delay: 0.10s; }
   .delay-2 { transition-delay: 0.20s; }
   .delay-3 { transition-delay: 0.30s; }
@@ -230,7 +86,11 @@ const GLOBAL_STYLES = `
 
   /* Cards */
   .card {
-    background: linear-gradient(160deg, #1d1d1d 0%, #161616 100%);
+    --gx: -9999px;
+    --gy: -9999px;
+    background:
+      radial-gradient(280px circle at var(--gx) var(--gy), rgba(100,255,218,0.06) 0%, transparent 70%),
+      linear-gradient(160deg, #1d1d1d 0%, #161616 100%);
     border: 1px solid #272727;
     transition: transform 0.3s cubic-bezier(0.16,1,0.3,1),
                 border-color 0.3s ease,
@@ -366,6 +226,53 @@ const GLOBAL_STYLES = `
     .nav-link:active { color: #e8e8e8; }
   }
 
+  /* ── Section label shimmer ───────────────────────────────────── */
+  @keyframes label-shimmer {
+    0%   { background-position: -200% center; }
+    100% { background-position:  200% center; }
+  }
+  .section-label {
+    background: linear-gradient(90deg, #64ffda 0%, rgba(100,255,218,0.35) 40%, #64ffda 60%, rgba(100,255,218,0.35) 100%);
+    background-size: 300% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: label-shimmer 6s linear infinite;
+  }
+
+  /* ── Section divider line grow on entrance ───────────────────── */
+  .section-line {
+    transform-origin: left center;
+    transform: scaleX(0);
+    transition: transform 0.8s cubic-bezier(0.16,1,0.3,1) 0.45s;
+  }
+  .fade-up.in-view .section-line { transform: scaleX(1); }
+
+  /* ── Avatar float ────────────────────────────────────────────── */
+  @keyframes avatar-float {
+    0%, 100% { transform: translateY(0px);  }
+    50%       { transform: translateY(-8px); }
+  }
+  .avatar-float { animation: avatar-float 5s ease-in-out infinite; }
+  .avatar-float:hover { animation-play-state: paused; }
+
+  /* ── Timeline dot pop-in ─────────────────────────────────────── */
+  .anim-slide-left .timeline-dot {
+    transform: scale(0);
+    transition: transform 0.5s cubic-bezier(0.34,1.56,0.64,1) 0.35s;
+  }
+  .anim-slide-left.in-view .timeline-dot { transform: scale(1); }
+
+  /* ── Achievement metric glow after count-up ──────────────────── */
+  @keyframes metric-pulse {
+    0%   { filter: none; }
+    35%  { filter: drop-shadow(0 0 14px rgba(100,255,218,0.65)); }
+    100% { filter: none; }
+  }
+  .anim-pop.in-view .metric-glow {
+    animation: metric-pulse 1.4s ease-out 1.65s both;
+  }
+
   /* Respect user's motion preference */
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {
@@ -376,24 +283,8 @@ const GLOBAL_STYLES = `
     .fade-up, .anim-slide-left, .anim-pop, .anim-fade { opacity: 1 !important; transform: none !important; }
     .timeline-line-inner { transform: scaleY(1) !important; }
     .cursor-blink { animation: none !important; opacity: 1; }
-  }
-
-  /* ── Custom cursor (desktop only) ─────────────────────── */
-  @media (hover: hover) and (pointer: fine) {
-    html, body { cursor: none !important; }
-    a, button, [role="button"] { cursor: none !important; }
-  }
-  #cursor-dot {
-    position: fixed; top: 0; left: 0; pointer-events: none; z-index: 99999;
-    width: 8px; height: 8px; border-radius: 50%;
-    background: #64ffda;
-    will-change: transform;
-  }
-  #cursor-ring {
-    position: fixed; top: 0; left: 0; pointer-events: none; z-index: 99998;
-    width: 32px; height: 32px; border-radius: 50%;
-    border: 1.5px solid rgba(100,255,218,0.5);
-    will-change: transform;
+    .section-line { transform: scaleX(1) !important; }
+    .anim-slide-left .timeline-dot { transform: scale(1) !important; }
   }
 
   /* ── Scroll animation variants ────────────────────────── */
@@ -402,14 +293,14 @@ const GLOBAL_STYLES = `
     will-change: transform, opacity;
     transition: opacity 0.65s cubic-bezier(0.16,1,0.3,1), transform 0.65s cubic-bezier(0.16,1,0.3,1);
   }
-  .anim-slide-left.in-view { opacity: 1; transform: translateX(0); }
+  .anim-slide-left.in-view { opacity: 1; transform: translateX(0); will-change: auto; }
 
   .anim-pop {
     opacity: 0; transform: scale(0.92);
     will-change: transform, opacity;
     transition: opacity 0.45s ease-out, transform 0.45s ease-out;
   }
-  .anim-pop.in-view { opacity: 1; transform: scale(1); }
+  .anim-pop.in-view { opacity: 1; transform: scale(1); will-change: auto; }
 
   .anim-fade {
     opacity: 0;
@@ -476,8 +367,15 @@ function useInView(threshold = 0.12) {
     const el = ref.current;
     if (!el) return;
     const observer = new IntersectionObserver(
-      ([entry]) => { setInView(entry.isIntersecting); },
-      { threshold }
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setInView(true);
+        } else if (entry.intersectionRatio === 0) {
+          // Only reset when fully off-screen so animations replay on next scroll-in
+          setInView(false);
+        }
+      },
+      { threshold: [0, threshold] }
     );
     observer.observe(el);
     return () => observer.disconnect();
@@ -551,6 +449,21 @@ function useMounted() {
 }
 
 // ================================================================
+// CARD SPOTLIGHT — shared mouse handlers for all .card elements
+// ================================================================
+const cardGlowHandlers = {
+  onMouseMove(e) {
+    const rect = e.currentTarget.getBoundingClientRect();
+    e.currentTarget.style.setProperty('--gx', `${e.clientX - rect.left}px`);
+    e.currentTarget.style.setProperty('--gy', `${e.clientY - rect.top}px`);
+  },
+  onMouseLeave(e) {
+    e.currentTarget.style.setProperty('--gx', '-9999px');
+    e.currentTarget.style.setProperty('--gy', '-9999px');
+  },
+};
+
+// ================================================================
 // SHARED COMPONENTS
 // ================================================================
 function TechChip({ label }) {
@@ -560,17 +473,9 @@ function TechChip({ label }) {
 function SectionHeader({ number, title, subtitle }) {
   const [ref, inView] = useInView();
   return (
-    <div ref={ref} className={`fade-up ${inView ? 'in-view' : ''} mb-10 sm:mb-16 relative`}>
+    <div ref={ref} className={`fade-up ${inView ? 'in-view' : ''} mb-10 sm:mb-16 relative overflow-hidden`}>
       <div className="ghost-number absolute -top-4 right-0 leading-none select-none">{number}</div>
-      <p
-        className="font-display text-xs tracking-widest uppercase mb-3"
-        style={{
-          background: 'linear-gradient(90deg, #64ffda 0%, rgba(100,255,218,0.55) 100%)',
-          WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent',
-          backgroundClip: 'text',
-        }}
-      >
+      <p className="font-display text-xs tracking-widest uppercase mb-3 section-label">
         {`// ${number}`}
       </p>
       <h2
@@ -582,7 +487,7 @@ function SectionHeader({ number, title, subtitle }) {
       {subtitle && (
         <p className="font-display text-[#555] text-xs tracking-widest uppercase mt-2">{subtitle}</p>
       )}
-      <div className="mt-6 w-14 h-px bg-gradient-to-r from-[#64ffda] to-transparent" />
+      <div className="mt-6 w-14 h-px section-line bg-gradient-to-r from-[#64ffda] to-transparent" />
     </div>
   );
 }
@@ -600,53 +505,6 @@ const NAV_LINKS = [
   { label: 'Contact', href: '#contact' },
 ];
 
-// ── Custom Cursor ──────────────────────────────────────────────────────────────
-function CustomCursor() {
-  const dotRef = useRef(null);
-  const ringRef = useRef(null);
-  const mouse = useRef({ x: -100, y: -100 });
-  const ring = useRef({ x: -100, y: -100 });
-  const raf = useRef(null);
-
-  useEffect(() => {
-    // Only attach on desktop (hover: hover, pointer: fine)
-    if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
-
-    const onMove = (e) => {
-      mouse.current = { x: e.clientX, y: e.clientY };
-    };
-    document.addEventListener('pointermove', onMove, { passive: true });
-
-    const lerp = (a, b, t) => a + (b - a) * t;
-
-    const tick = () => {
-      ring.current.x = lerp(ring.current.x, mouse.current.x, 0.12);
-      ring.current.y = lerp(ring.current.y, mouse.current.y, 0.12);
-
-      if (dotRef.current) {
-        dotRef.current.style.transform = `translate(${mouse.current.x - 4}px, ${mouse.current.y - 4}px)`;
-      }
-      if (ringRef.current) {
-        ringRef.current.style.transform = `translate(${ring.current.x - 16}px, ${ring.current.y - 16}px)`;
-      }
-
-      raf.current = requestAnimationFrame(tick);
-    };
-    raf.current = requestAnimationFrame(tick);
-
-    return () => {
-      document.removeEventListener('pointermove', onMove);
-      cancelAnimationFrame(raf.current);
-    };
-  }, []);
-
-  return (
-    <>
-      <div id="cursor-dot" ref={dotRef} />
-      <div id="cursor-ring" ref={ringRef} />
-    </>
-  );
-}
 
 function Nav() {
   const [scrolled, setScrolled] = useState(false);
@@ -679,15 +537,15 @@ function Nav() {
           background: scrolled
             ? 'linear-gradient(180deg, rgba(12,12,12,0.97) 0%, rgba(10,10,10,0.88) 100%)'
             : 'transparent',
-          backdropFilter: scrolled ? 'blur(20px) saturate(1.2)' : 'none',
+          backdropFilter: scrolled ? 'blur(14px)' : 'none',
           borderBottom: scrolled ? '1px solid rgba(100,255,218,0.06)' : '1px solid transparent',
-          transition: 'transform 0.35s ease, background 0.35s ease, backdrop-filter 0.35s ease',
+          transition: 'transform 0.35s ease, background 0.35s ease',
         }}
         className="fixed top-0 left-0 right-0 z-50 px-4 sm:px-6 lg:px-12"
       >
         <div className="max-w-6xl mx-auto flex items-center justify-between h-16">
           <button
-            onClick={() => scrollTo('#hero')}
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
             className="font-display text-base font-bold text-[#e8e8e8] hover:text-[#64ffda] transition-colors bg-transparent border-0 cursor-pointer p-0"
           >
             {meta.initials}<span style={{ color: '#64ffda' }}>.</span>
@@ -728,9 +586,9 @@ function Nav() {
           transform: mobileOpen ? 'translateY(0)' : 'translateY(-6px)',
           transition: 'opacity 0.22s ease, transform 0.22s ease',
           background: 'rgba(8,8,8,0.97)',
-          backdropFilter: 'blur(20px)',
+          backdropFilter: 'blur(12px)',
         }}
-        className="fixed inset-0 z-40 flex flex-col items-center justify-center gap-8 md:hidden"
+        className="fixed inset-0 z-40 flex flex-col items-center justify-center gap-6 md:hidden overflow-y-auto py-16"
       >
         {NAV_LINKS.map(l => (
           <button
@@ -899,7 +757,7 @@ function About() {
         {/* Avatar box */}
         <div ref={boxRef} className={`anim-slide-left ${boxInView ? 'in-view' : ''}`}>
           <div
-            className="relative aspect-square max-w-[200px] sm:max-w-xs mx-auto md:mx-0 cursor-default"
+            className="relative aspect-square max-w-[200px] sm:max-w-xs mx-auto md:mx-0 cursor-default avatar-float"
             style={{
               border: hovered ? '1px solid rgba(100,255,218,0.45)' : '1px solid #1e1e1e',
               background: '#0b0b0b',
@@ -992,7 +850,7 @@ function ExperienceItem({ job, index }) {
         style={{ border: '2px solid #64ffda', background: '#0a0a0a' }}
       />
 
-      <div className="card p-4 sm:p-7">
+      <div className="card p-4 sm:p-7" {...cardGlowHandlers}>
         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-5">
           <div>
             <h3 className="font-display text-base font-bold text-[#e8e8e8]">{job.role}</h3>
@@ -1061,6 +919,7 @@ function SkillGroup({ group, index }) {
       ref={ref}
       className={`fade-up ${inView ? 'in-view' : ''} card p-6`}
       style={{ transitionDelay: `${index * 0.09}s` }}
+      {...cardGlowHandlers}
     >
       <div className="flex items-center gap-2.5 mb-4">
         <Icon size={14} style={{ color: '#64ffda' }} />
@@ -1097,6 +956,7 @@ function PersonalProjectCard({ project, index }) {
       ref={ref}
       className={`fade-up ${inView ? 'in-view' : ''} card p-6 flex flex-col`}
       style={{ transitionDelay: `${index * 0.1}s` }}
+      {...cardGlowHandlers}
     >
       <div className="flex items-start justify-between mb-3">
         <h3 className="font-display text-sm font-bold text-[#e8e8e8]">{project.name}</h3>
@@ -1143,6 +1003,7 @@ function ProfessionalProjectCard({ project, index }) {
       ref={ref}
       className={`fade-up ${inView ? 'in-view' : ''} card p-4 sm:p-7 flex flex-col`}
       style={{ transitionDelay: `${index * 0.15}s` }}
+      {...cardGlowHandlers}
     >
       <h3 className="font-display text-sm font-bold text-[#e8e8e8] mb-2">{project.name}</h3>
 
@@ -1246,7 +1107,7 @@ function AchievementItem({ achievement, index }) {
       style={{ transitionDelay: `${index * 0.12}s` }}
     >
       <div
-        className="font-display font-bold mb-2 leading-none"
+        className="font-display font-bold mb-2 leading-none metric-glow"
         style={{ fontSize: 'clamp(2rem, 6vw, 3.5rem)', color: '#64ffda' }}
       >
         {display}
@@ -1291,6 +1152,7 @@ function BlogCard({ post, index }) {
       ref={ref}
       className={`fade-up ${inView ? 'in-view' : ''} card p-6 flex flex-col no-underline group`}
       style={{ transitionDelay: `${index * 0.1}s`, textDecoration: 'none' }}
+      {...cardGlowHandlers}
     >
       <div className="flex items-center justify-between mb-4">
         <span
@@ -1375,7 +1237,7 @@ function Footer() {
           </p>
           <h2
             className="font-display font-bold text-[#e8e8e8] mb-8 leading-tight"
-            style={{ fontSize: 'clamp(2rem,5vw,3.5rem)' }}
+            style={{ fontSize: 'clamp(1.5rem,5vw,3.5rem)' }}
           >
             Let's build something<br />
             <span style={{ color: '#64ffda' }}>together.</span>
@@ -1392,9 +1254,12 @@ function Footer() {
         <div className="w-full h-px mb-12" style={{ background: 'linear-gradient(90deg, transparent 0%, #333 20%, rgba(100,255,218,0.28) 50%, #333 80%, transparent 100%)' }} />
 
         <div ref={bottomRef} className={`anim-fade ${bottomInView ? 'in-view' : ''} flex flex-col md:flex-row items-center justify-between gap-6`}>
-          <span className="font-display text-xl font-bold text-[#666]">
+          <button
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            className="font-display text-xl font-bold text-[#666] hover:text-[#e8e8e8] transition-colors bg-transparent border-0 cursor-pointer p-0"
+          >
             {meta.initials}<span style={{ color: '#64ffda' }}>.</span>
-          </span>
+          </button>
 
           <div ref={socialsRef} className="flex items-center gap-6">
             {SOCIALS.map(({ icon: Icon, href, label }) => (
@@ -1414,13 +1279,45 @@ function Footer() {
 }
 
 // ================================================================
+// SCROLL TO TOP
+// ================================================================
+function ScrollToTop() {
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    const onScroll = () => setVisible(window.scrollY > 400);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  return (
+    <button
+      onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+      aria-label="Scroll to top"
+      className="fixed bottom-6 left-6 z-40 flex items-center justify-center w-10 h-10 font-display"
+      style={{
+        border: '1px solid rgba(100,255,218,0.45)',
+        color: '#64ffda',
+        background: 'rgba(10,10,10,0.85)',
+        backdropFilter: 'blur(10px)',
+        opacity: visible ? 1 : 0,
+        transform: visible ? 'translateY(0)' : 'translateY(10px)',
+        pointerEvents: visible ? 'auto' : 'none',
+        transition: 'opacity 0.3s ease, transform 0.3s ease',
+      }}
+    >
+      <ArrowUp size={15} />
+    </button>
+  );
+}
+
+// ================================================================
 // APP
 // ================================================================
 export default function App() {
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: GLOBAL_STYLES }} />
-      <CustomCursor />
+      <ScrollToTop />
       <div style={{ background: '#111111' }}>
         <Nav />
         <main>
