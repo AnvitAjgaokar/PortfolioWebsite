@@ -1293,7 +1293,7 @@ function ScrollToTop() {
     <button
       onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
       aria-label="Scroll to top"
-      className="fixed bottom-6 left-6 z-40 flex items-center justify-center w-10 h-10 font-display"
+      className="fixed bottom-6 right-6 z-40 flex items-center justify-center w-10 h-10 font-display"
       style={{
         border: '1px solid rgba(100,255,218,0.45)',
         color: '#64ffda',

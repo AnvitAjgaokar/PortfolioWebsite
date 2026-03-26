@@ -7,9 +7,9 @@ const about = {
   currently: 'Building core transaction services at a Series B fintech startup',
   avatar: 'AC',
   stats: [
-    { value: '2+', label: 'Years Exp.' },
+    { value: '2', label: 'Years Exp.' },
     { value: '10+', label: 'Projects' },
-    { value: '3+', label: 'Articles' },
+    { value: '1', label: 'Articles' },
   ],
 };
 

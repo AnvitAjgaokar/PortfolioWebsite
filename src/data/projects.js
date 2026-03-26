@@ -1,31 +1,23 @@
 const projects = {
   personal: [
+
     {
-      name: 'Nexus CLI',
+      name: 'GRE Vocab',
       description:
-        'A developer productivity CLI tool written in Go that scaffolds backend projects with opinionated defaults — generates folder structures, Dockerfiles, Makefiles, and CI/CD templates in seconds.',
-      techStack: ['Go', 'Cobra', 'Docker', 'GitHub Actions'],
+        'A React flashcard app built for a friend prepping for the GRE. Covers vocabulary through spaced-repetition-style cards and built-in tests. Fully frontend — all word data lives in JSON files, no backend required.',
+      techStack: ['React', 'JSON'],
       liveUrl: null,
-      githubUrl: '#',
-      highlight: '500+ GitHub stars',
+      githubUrl: 'https://github.com/AnvitAjgaokar/GreVocab',
+      highlight: 'Built for a friend',
     },
     {
-      name: 'FastAPI Boilerplate',
+      name: 'Dimension Explorer',
       description:
-        'Production-ready FastAPI starter with JWT auth, async PostgreSQL, Redis caching, Celery task queue, Docker Compose, and a comprehensive test suite. Used as the base for 3+ production apps.',
-      techStack: ['Python', 'FastAPI', 'PostgreSQL', 'Redis', 'Docker', 'Pytest'],
+        'A Python-based 3D engine built out of curiosity in physics — renders and visualizes higher-dimensional geometry in real time. Implements projection math from scratch to map 3D (and beyond) coordinate spaces onto a 2D viewport.',
+      techStack: ['Python', 'NumPy', 'Pygame'],
       liveUrl: null,
-      githubUrl: '#',
-      highlight: '1.2K+ GitHub forks',
-    },
-    {
-      name: 'Beacon Bot',
-      description:
-        'A Discord bot with an internal REST API that tracks developer activity, coding streaks, and sends personalized daily digests. Actively managing 3 communities with 2,000+ combined members.',
-      techStack: ['Python', 'Discord.py', 'FastAPI', 'MongoDB', 'Redis'],
-      liveUrl: '#',
-      githubUrl: '#',
-      highlight: '2,000+ active users',
+      githubUrl: 'https://github.com/AnvitAjgaokar/Dimension-Exploere',
+      highlight: 'Physics curiosity project',
     },
   ],
   professional: [
