@@ -5,14 +5,13 @@ const experience = [
     duration: 'Apr 2024 – Present',
     type: 'Full-time',
     descriptions: [
-      'Designed and shipped a high-throughput transaction processing service in Go, handling 500K+ events/day with P99 latency under 50ms',
-      'Reduced API response times by 60% through strategic Redis caching, query optimization, and connection pooling',
-      'Led migration of 3 legacy Python services to a unified FastAPI architecture, improving maintainability and cutting error rates by 35%',
-      'Implemented async job queue using Celery + Redis, decoupling heavy workloads from the request lifecycle',
+      "Engineered and maintained backend services for an enterprise HR platform serving 130,000+ active employees at India's 2nd largest private bank; achieved up to 70% performance improvements at peak load through targeted code and database optimization.",
+      'Managed multiple concurrent production monoliths — core API, admin, and notification services — simultaneously; reduced code redundancy and introduced reusable generic components to accelerate feature development.',
+      'Modernised legacy SOAP/WSDL integrations to REST APIs; integrated third-party systems with secure, production-grade implementations and leveraged AI-assisted development workflows within strict data-confidentiality boundaries.',
+      'Improved database performance through strategic indexing and proper ORM usage; led backend migration from Oracle Fusion to PeopleSoft and refined team-wide coding standards and SOPs.',
     ],
-    techStack: ['Java', 'Spring', 'SpringBoot', 'Hibernate', 'MS SQL', 'ProtoBuffer', 'OHS', 'Weblogic','RMI','Git','GitLab','FCM'],
+    techStack: ['Java', 'Spring', 'SpringBoot', 'Hibernate', 'MS SQL', 'ProtoBuffer', 'OHS', 'Weblogic', 'RMI', 'Git', 'GitLab', 'FCM'],
   },
-
 ];
 
 export default experience;

@@ -1,23 +1,23 @@
 const achievements = [
   {
-    metric: '60%',
-    title: 'API Latency Reduction',
-    description: 'Profiled and optimized critical endpoints via Redis caching, N+1 query elimination, and targeted DB index tuning',
+    metric: '85%',
+    title: 'Response Time Cut',
+    description: 'Reduced peak API latency from 40s to under 7s by enforcing configurable connection and read timeouts across multiple chained async service calls',
   },
   {
-    metric: '45%',
-    title: 'Query Time Cut',
-    description: 'Rewrote complex aggregation queries and introduced partial indexes on high-traffic PostgreSQL tables',
+    metric: '70%',
+    title: 'Peak Load Speedup',
+    description: 'Improved critical service performance at peak load through targeted code refactoring, strategic DB indexing, and ORM tuning',
   },
   {
-    metric: '3hrs',
-    title: 'Saved Per Week',
-    description: 'Automated the entire deploy pipeline with GitHub Actions, eliminating manual staging and production deploys',
+    metric: '130K+',
+    title: 'Active Users Served',
+    description: "Engineered and maintained the backend for India's 2nd largest private bank's HR platform, serving its entire workforce at production scale",
   },
   {
-    metric: '99.98%',
-    title: 'Service Uptime',
-    description: 'Achieved via circuit breakers, health checks, graceful shutdown, and multi-AZ AWS deployment',
+    metric: '100%',
+    title: 'Migration Delivered',
+    description: 'Successfully led the complete backend migration from Oracle Fusion to PeopleSoft with zero data loss and no disruption to 130,000+ active users',
   },
 ];
 
