@@ -1248,6 +1248,8 @@ function Blog() {
   const [expanded, setExpanded] = useState(false);
   const visible = expanded ? blog : blog.slice(0, PROJECTS_INITIAL);
 
+  if (!blog.length) return null;
+
   return (
     <section id="blog" style={{ background: 'linear-gradient(180deg, #080808 0%, #1a1a1a 50%, #080808 100%)' }} className="py-16 sm:py-24 lg:py-28">
       <div className="max-w-6xl mx-auto px-5 sm:px-8 lg:px-12">
@@ -1284,7 +1286,7 @@ function ContactForm() {
     const msg = form.message.trim();
     if (name.length < 2) e.name = 'Minimum 2 characters.';
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) e.email = 'Enter a valid email.';
-    if (msg.length < 20) e.message = 'Minimum 20 characters.';
+    if (msg.length < 10) e.message = 'Minimum 10 characters.';
     else if (msg.length > 1000) e.message = 'Maximum 1000 characters.';
     return e;
   }
