@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import {
   Github, Linkedin, Twitter, Mail, ExternalLink, ArrowUpRight, ArrowUp,
   Menu, X, Code2, Database, Server, Cloud, Terminal, Clock,
-  MapPin, ChevronRight,
+  MapPin, ChevronRight, ChevronUp,
 } from 'lucide-react';
 
 import meta         from './src/data/meta.js';
@@ -55,8 +55,8 @@ const GLOBAL_STYLES = `
     50%, 100% { opacity: 0; }
   }
   @keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(28px); }
-    to   { opacity: 1; transform: translateY(0);    }
+    from { opacity: 0; transform: translate3d(0, 28px, 0); }
+    to   { opacity: 1; transform: translate3d(0, 0, 0);    }
   }
 
   .cursor-blink { animation: cursor-blink 1s step-end infinite; }
@@ -71,12 +71,13 @@ const GLOBAL_STYLES = `
   /* Scroll-reveal */
   .fade-up {
     opacity: 0;
-    transform: translateY(32px);
+    transform: translate3d(0, 32px, 0);
     will-change: transform, opacity;
+    backface-visibility: hidden;
     transition: opacity 0.65s cubic-bezier(0.16,1,0.3,1),
                 transform 0.65s cubic-bezier(0.16,1,0.3,1);
   }
-  .fade-up.in-view { opacity: 1; transform: translateY(0); will-change: auto; }
+  .fade-up.in-view { opacity: 1; transform: translate3d(0, 0, 0); will-change: auto; }
   .delay-1 { transition-delay: 0.10s; }
   .delay-2 { transition-delay: 0.20s; }
   .delay-3 { transition-delay: 0.30s; }
@@ -289,15 +290,17 @@ const GLOBAL_STYLES = `
 
   /* ── Scroll animation variants ────────────────────────── */
   .anim-slide-left {
-    opacity: 0; transform: translateX(-40px);
+    opacity: 0; transform: translate3d(-40px, 0, 0);
     will-change: transform, opacity;
+    backface-visibility: hidden;
     transition: opacity 0.65s cubic-bezier(0.16,1,0.3,1), transform 0.65s cubic-bezier(0.16,1,0.3,1);
   }
-  .anim-slide-left.in-view { opacity: 1; transform: translateX(0); will-change: auto; }
+  .anim-slide-left.in-view { opacity: 1; transform: translate3d(0, 0, 0); will-change: auto; }
 
   .anim-pop {
     opacity: 0; transform: scale(0.92);
     will-change: transform, opacity;
+    backface-visibility: hidden;
     transition: opacity 0.45s ease-out, transform 0.45s ease-out;
   }
   .anim-pop.in-view { opacity: 1; transform: scale(1); will-change: auto; }
@@ -351,8 +354,8 @@ const GLOBAL_STYLES = `
 
   /* Mobile: reduce translate distances */
   @media (max-width: 640px) {
-    .fade-up { transform: translateY(20px); }
-    .anim-slide-left { transform: translateX(-22px); }
+    .fade-up { transform: translate3d(0, 20px, 0); }
+    .anim-slide-left { transform: translate3d(-22px, 0, 0); }
     .anim-pop { transform: scale(0.93); }
   }
 `;
@@ -1038,9 +1041,48 @@ function ProfessionalProjectCard({ project, index }) {
   );
 }
 
+const PROJECTS_INITIAL = 3;
+
+function ExpandToggle({ total, expanded, onToggle, noun = 'project' }) {
+  const extra = total - PROJECTS_INITIAL;
+  if (total <= PROJECTS_INITIAL) return null;
+  return (
+    <div className="flex justify-center mt-8">
+      <button
+        onClick={onToggle}
+        className="font-display text-xs flex items-center gap-2"
+        style={{
+          background: 'transparent',
+          border: '1px solid rgba(100,255,218,0.18)',
+          color: expanded ? '#555' : '#64ffda',
+          padding: '10px 24px',
+          cursor: 'pointer',
+          letterSpacing: '0.06em',
+          transition: 'border-color 0.2s, color 0.2s',
+        }}
+        onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(100,255,218,0.38)'; }}
+        onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(100,255,218,0.18)'; }}
+      >
+        {expanded
+          ? <><ChevronUp size={11} /><span>Collapse</span></>
+          : <><span>{extra} more {noun}{extra !== 1 ? 's' : ''}</span><ChevronRight size={11} /></>}
+      </button>
+    </div>
+  );
+}
+
 function Projects() {
   const { projects } = portfolioData;
   const [tab, setTab] = useState('personal');
+  const [personalExpanded, setPersonalExpanded] = useState(false);
+  const [proExpanded, setProExpanded] = useState(false);
+
+  const visiblePersonal = personalExpanded
+    ? projects.personal
+    : projects.personal.slice(0, PROJECTS_INITIAL);
+  const visiblePro = proExpanded
+    ? projects.professional
+    : projects.professional.slice(0, PROJECTS_INITIAL);
 
   return (
     <section id="projects" style={{ background: 'linear-gradient(180deg, #080808 0%, #1a1a1a 50%, #080808 100%)' }} className="py-16 sm:py-24 lg:py-28">
@@ -1066,19 +1108,33 @@ function Projects() {
         </div>
 
         {tab === 'personal' && (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {projects.personal.map((p, i) => (
-              <PersonalProjectCard key={p.name} project={p} index={i} />
-            ))}
-          </div>
+          <>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {visiblePersonal.map((p, i) => (
+                <PersonalProjectCard key={p.name} project={p} index={i} />
+              ))}
+            </div>
+            <ExpandToggle
+              total={projects.personal.length}
+              expanded={personalExpanded}
+              onToggle={() => setPersonalExpanded(x => !x)}
+            />
+          </>
         )}
 
         {tab === 'professional' && (
-          <div className="grid md:grid-cols-2 gap-4">
-            {projects.professional.map((p, i) => (
-              <ProfessionalProjectCard key={p.name} project={p} index={i} />
-            ))}
-          </div>
+          <>
+            <div className="grid md:grid-cols-2 gap-4">
+              {visiblePro.map((p, i) => (
+                <ProfessionalProjectCard key={p.name} project={p} index={i} />
+              ))}
+            </div>
+            <ExpandToggle
+              total={projects.professional.length}
+              expanded={proExpanded}
+              onToggle={() => setProExpanded(x => !x)}
+            />
+          </>
         )}
       </div>
     </section>
@@ -1189,15 +1245,209 @@ function BlogCard({ post, index }) {
 
 function Blog() {
   const { blog } = portfolioData;
+  const [expanded, setExpanded] = useState(false);
+  const visible = expanded ? blog : blog.slice(0, PROJECTS_INITIAL);
+
   return (
     <section id="blog" style={{ background: 'linear-gradient(180deg, #080808 0%, #1a1a1a 50%, #080808 100%)' }} className="py-16 sm:py-24 lg:py-28">
       <div className="max-w-6xl mx-auto px-5 sm:px-8 lg:px-12">
         <SectionHeader number="06" title="Writing" subtitle="Thoughts worth sharing." />
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {blog.map((post, i) => <BlogCard key={post.title} post={post} index={i} />)}
+          {visible.map((post, i) => <BlogCard key={post.title} post={post} index={i} />)}
         </div>
+        <ExpandToggle
+          total={blog.length}
+          expanded={expanded}
+          onToggle={() => setExpanded(x => !x)}
+          noun="article"
+        />
       </div>
     </section>
+  );
+}
+
+// ================================================================
+// CONTACT FORM
+// ================================================================
+function ContactForm() {
+  const { social } = portfolioData;
+  const [form, setForm] = useState({ name: '', email: '', message: '' });
+  const [honeypot, setHoneypot] = useState('');
+  const [errors, setErrors] = useState({});
+  const [status, setStatus] = useState('idle'); // idle | sending | success | error | rate-limited
+  const COOLDOWN_MS = 60000;
+
+  function validate() {
+    const e = {};
+    const name = form.name.trim();
+    const email = form.email.trim();
+    const msg = form.message.trim();
+    if (name.length < 2) e.name = 'Minimum 2 characters.';
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) e.email = 'Enter a valid email.';
+    if (msg.length < 20) e.message = 'Minimum 20 characters.';
+    else if (msg.length > 1000) e.message = 'Maximum 1000 characters.';
+    return e;
+  }
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    if (honeypot) return; // bot trap
+
+    const last = parseInt(localStorage.getItem('_pf_ts') || '0');
+    if (Date.now() - last < COOLDOWN_MS) { setStatus('rate-limited'); return; }
+
+    const errs = validate();
+    if (Object.keys(errs).length) { setErrors(errs); return; }
+
+    setErrors({});
+    setStatus('sending');
+    try {
+      const res = await fetch(social.formEndpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({ name: form.name.trim(), email: form.email.trim(), message: form.message.trim() }),
+      });
+      if (res.ok) {
+        localStorage.setItem('_pf_ts', String(Date.now()));
+        setStatus('success');
+        setForm({ name: '', email: '', message: '' });
+      } else {
+        setStatus('error');
+      }
+    } catch {
+      setStatus('error');
+    }
+  }
+
+  const inputBase = (hasErr) => ({
+    background: '#0a0a0a',
+    border: `1px solid ${hasErr ? 'rgba(255,100,100,0.45)' : '#272727'}`,
+    color: '#d4d4d4',
+    fontFamily: 'Inter, system-ui, sans-serif',
+    fontSize: '0.875rem',
+    outline: 'none',
+    width: '100%',
+    padding: '10px 14px',
+    transition: 'border-color 0.2s',
+    boxSizing: 'border-box',
+  });
+
+  const labelStyle = {
+    fontFamily: "'Space Mono', monospace",
+    fontSize: '0.63rem',
+    color: '#555',
+    textTransform: 'uppercase',
+    letterSpacing: '0.1em',
+    display: 'block',
+    marginBottom: '6px',
+  };
+
+  const errStyle = {
+    fontFamily: "'Space Mono', monospace",
+    fontSize: '0.62rem',
+    color: 'rgba(255,110,110,0.9)',
+    marginTop: '4px',
+    display: 'block',
+  };
+
+  if (status === 'success') {
+    return (
+      <div style={{ padding: '40px 32px', textAlign: 'center', border: '1px solid rgba(100,255,218,0.18)', background: 'rgba(100,255,218,0.03)' }}>
+        <div style={{ width: '38px', height: '38px', border: '1px solid rgba(100,255,218,0.45)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px', color: '#64ffda', fontSize: '1rem' }}>✓</div>
+        <p style={{ fontFamily: "'Space Mono', monospace", color: '#64ffda', fontSize: '0.88rem', marginBottom: '6px', fontWeight: 700 }}>Message delivered.</p>
+        <p style={{ color: '#666', fontSize: '0.78rem', marginBottom: '20px' }}>I'll get back to you shortly.</p>
+        <button
+          onClick={() => setStatus('idle')}
+          style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.68rem', color: '#64ffda', background: 'transparent', border: '1px solid rgba(100,255,218,0.25)', padding: '8px 20px', cursor: 'pointer', letterSpacing: '0.05em' }}
+        >
+          Send another
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <form onSubmit={handleSubmit} noValidate>
+      {/* Honeypot — invisible to real users, catches bots that fill all fields */}
+      <input type="text" name="_gotcha" value={honeypot} onChange={e => setHoneypot(e.target.value)} style={{ display: 'none' }} tabIndex={-1} autoComplete="off" aria-hidden="true" />
+
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '16px', marginBottom: '16px' }}>
+        <div>
+          <label style={labelStyle}>Name</label>
+          <input
+            type="text"
+            value={form.name}
+            onChange={e => { setForm(f => ({ ...f, name: e.target.value })); setErrors(er => ({ ...er, name: '' })); }}
+            style={inputBase(errors.name)}
+            onFocus={e => { e.target.style.borderColor = 'rgba(100,255,218,0.4)'; }}
+            onBlur={e => { e.target.style.borderColor = errors.name ? 'rgba(255,100,100,0.45)' : '#272727'; }}
+            placeholder="Your name"
+          />
+          {errors.name && <span style={errStyle}>{errors.name}</span>}
+        </div>
+        <div>
+          <label style={labelStyle}>Email</label>
+          <input
+            type="email"
+            value={form.email}
+            onChange={e => { setForm(f => ({ ...f, email: e.target.value })); setErrors(er => ({ ...er, email: '' })); }}
+            style={inputBase(errors.email)}
+            onFocus={e => { e.target.style.borderColor = 'rgba(100,255,218,0.4)'; }}
+            onBlur={e => { e.target.style.borderColor = errors.email ? 'rgba(255,100,100,0.45)' : '#272727'; }}
+            placeholder="your@email.com"
+          />
+          {errors.email && <span style={errStyle}>{errors.email}</span>}
+        </div>
+      </div>
+
+      <div style={{ marginBottom: '20px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+          <label style={{ ...labelStyle, marginBottom: 0 }}>Message</label>
+          <span style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.6rem', color: form.message.length > 900 ? 'rgba(255,110,110,0.8)' : '#3a3a3a' }}>
+            {form.message.length}/1000
+          </span>
+        </div>
+        <textarea
+          value={form.message}
+          onChange={e => { setForm(f => ({ ...f, message: e.target.value })); setErrors(er => ({ ...er, message: '' })); }}
+          style={{ ...inputBase(errors.message), padding: '12px 14px', resize: 'vertical', minHeight: '140px' }}
+          onFocus={e => { e.target.style.borderColor = 'rgba(100,255,218,0.4)'; }}
+          onBlur={e => { e.target.style.borderColor = errors.message ? 'rgba(255,100,100,0.45)' : '#272727'; }}
+          maxLength={1000}
+          placeholder="What's on your mind?"
+        />
+        {errors.message && <span style={errStyle}>{errors.message}</span>}
+      </div>
+
+      {status === 'rate-limited' && (
+        <p style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.68rem', color: 'rgba(255,200,80,0.85)', marginBottom: '14px' }}>
+          Too many requests — please wait a moment before sending again.
+        </p>
+      )}
+      {status === 'error' && (
+        <p style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.68rem', color: 'rgba(255,110,110,0.85)', marginBottom: '14px' }}>
+          Something went wrong. Please try again or email directly.
+        </p>
+      )}
+
+      <button
+        type="submit"
+        disabled={status === 'sending'}
+        className="btn-shine font-display text-xs font-bold min-h-[48px]"
+        style={{
+          background: status === 'sending' ? 'rgba(100,255,218,0.55)' : '#64ffda',
+          color: '#0a0a0a',
+          border: 'none',
+          padding: '12px 32px',
+          cursor: status === 'sending' ? 'not-allowed' : 'pointer',
+          opacity: status === 'sending' ? 0.75 : 1,
+          transition: 'opacity 0.2s',
+          letterSpacing: '0.05em',
+        }}
+      >
+        {status === 'sending' ? 'Sending...' : 'Send Message →'}
+      </button>
+    </form>
   );
 }
 
@@ -1231,24 +1481,22 @@ function Footer() {
     <footer id="contact" style={{ background: 'linear-gradient(180deg, #0e0e0e 0%, #050505 55%, #020202 100%)', borderTop: '1px solid rgba(100,255,218,0.07)' }}>
       <div className="max-w-6xl mx-auto px-5 sm:px-8 lg:px-12 py-14 sm:py-20 lg:py-24">
         {/* CTA block */}
-        <div ref={ref} className={`fade-up ${inView ? 'in-view' : ''} text-center mb-12 sm:mb-16 lg:mb-20`}>
-          <p className="font-display text-[#777] text-xs uppercase tracking-widest mb-4">
-            Currently open to new opportunities
-          </p>
-          <h2
-            className="font-display font-bold text-[#e8e8e8] mb-8 leading-tight"
-            style={{ fontSize: 'clamp(1.5rem,5vw,3.5rem)' }}
-          >
-            Let's build something<br />
-            <span style={{ color: '#64ffda' }}>together.</span>
-          </h2>
-          <a
-            href={`mailto:${social.email}`}
-            className="inline-flex items-center gap-2 font-display text-xs px-8 py-3.5 hover:bg-[rgba(100,255,218,0.07)] transition-colors"
-            style={{ border: '1px solid rgba(100,255,218,0.5)', color: '#64ffda', textDecoration: 'none' }}
-          >
-            <Mail size={13} /> Say Hello
-          </a>
+        <div ref={ref} className={`fade-up ${inView ? 'in-view' : ''} mb-12 sm:mb-16 lg:mb-20`}>
+          <div className="text-center mb-10 sm:mb-12">
+            <p className="font-display text-[#777] text-xs uppercase tracking-widest mb-4">
+              Currently open to new opportunities
+            </p>
+            <h2
+              className="font-display font-bold text-[#e8e8e8] mb-2 leading-tight"
+              style={{ fontSize: 'clamp(1.5rem,5vw,3.5rem)' }}
+            >
+              Let's build something<br />
+              <span style={{ color: '#64ffda' }}>together.</span>
+            </h2>
+          </div>
+          <div className="max-w-2xl mx-auto">
+            <ContactForm />
+          </div>
         </div>
 
         <div className="w-full h-px mb-12" style={{ background: 'linear-gradient(90deg, transparent 0%, #333 20%, rgba(100,255,218,0.28) 50%, #333 80%, transparent 100%)' }} />

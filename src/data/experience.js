@@ -10,7 +10,7 @@ const experience = [
       'Modernised legacy SOAP/WSDL integrations to REST APIs; integrated third-party systems with secure, production-grade implementations and leveraged AI-assisted development workflows within strict data-confidentiality boundaries.',
       'Improved database performance through strategic indexing and proper ORM usage; led backend migration from Oracle Fusion to PeopleSoft and refined team-wide coding standards and SOPs.',
     ],
-    techStack: ['Java', 'Spring', 'SpringBoot', 'Hibernate', 'MS SQL', 'ProtoBuffer', 'OHS', 'Weblogic', 'RMI', 'Git', 'GitLab', 'FCM'],
+    techStack: ['Java', 'Spring', 'SpringBoot', 'Hibernate', 'MS SQL', 'ProtoBuffer', 'OHS', 'Weblogic', 'RMI', 'Git', 'GitLab', 'FCM','LDAP'],
   },
 ];
 

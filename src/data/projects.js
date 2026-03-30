@@ -11,6 +11,24 @@ const projects = {
       highlight: 'Built for a friend',
     },
     {
+      name: 'Rust Application Server',
+      description:
+        'A ground-up HTTP application server written in Rust, built to demystify how enterprise application servers like Weblogic handle request lifecycles, thread management, and WAR/JAR deployments — driven by first-hand production experience with Java EE.',
+      techStack: ['Rust'],
+      liveUrl: null,
+      githubUrl: 'https://github.com/AnvitAjgaokar/RustApplicationServer',
+      highlight: 'Built to understand the internals',
+    },
+    {
+      name: 'Load Balancer Simulator',
+      description:
+        'An interactive simulator that models real-world load balancing behaviour across multiple server nodes. Supports configurable algorithms (Round Robin, Least Connections, etc.), allowing users to observe how traffic distribution and server load evolve under different strategies.',
+      techStack: ['React', 'JavaScript'],
+      liveUrl: null,
+      githubUrl: 'https://github.com/AnvitAjgaokar/Load-Balancer-Simulator',
+      highlight: 'Visual systems learning tool',
+    },
+    {
       name: 'Dimension Explorer',
       description:
         'A Python-based 3D engine built out of curiosity in physics — renders and visualizes higher-dimensional geometry in real time. Implements projection math from scratch to map 3D (and beyond) coordinate spaces onto a 2D viewport.',

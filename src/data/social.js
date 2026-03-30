@@ -4,6 +4,8 @@ const social = {
   twitter: '#',
   email: 'anvit.coding@gmail.com',
   resume: '/resume.pdf',
+  // Formspree endpoint — replace YOUR_FORM_ID after creating a form at formspree.io
+  formEndpoint: 'https://formspree.io/f/xzdkrkpj',
 };
 
 export default social;
