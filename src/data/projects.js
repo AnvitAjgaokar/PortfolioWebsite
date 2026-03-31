@@ -1,5 +1,38 @@
 const projects = {
+  // Set to false to hide the Professional tab entirely — no code change required.
+  showProfessional: false,
+
   personal: [
+
+    {
+      name: 'Be-Park',
+      description:
+        'A pre-booking and parking management platform built to address the real friction of unorganised parking at large venues. Users reserve a spot before arrival; the Django backend manages availability, bookings, and state, while the Flutter mobile app serves as the client interface. Separate frontend and backend repositories.',
+      techStack: ['Flutter', 'Django', 'Python'],
+      liveUrl: null,
+      githubUrl: 'https://github.com/AnvitAjgaokar/Be-Park-Backend',
+      highlight: 'Built to solve real chaos',
+    },
+
+    {
+      name: 'KT Document RAG',
+      description:
+        'A Retrieval-Augmented Generation pipeline built as a hobby and deliberate learning exercise. Indexes Knowledge Transfer documents and enables natural language querying over them — built end-to-end in Python to understand embeddings, vector retrieval, and LLM orchestration from first principles rather than abstracted APIs.',
+      techStack: ['Python', 'RAG'],
+      liveUrl: null,
+      githubUrl: 'https://github.com/AnvitAjgaokar/KT-RAG',
+      highlight: 'Deep-dive into RAG internals',
+    },
+
+    {
+      name: 'Blog Platform Backend',
+      description:
+        'Production-grade REST API for a full-featured blog platform, built with enterprise concerns from the ground up. Implements configurable filter-level encryption, centralised global exception handling, JWT-based authentication, and a clean layered architecture — designed to the same standards expected of a commercial deployment.',
+      techStack: ['Java', 'Spring Boot', 'PostgreSQL', 'JWT'],
+      liveUrl: null,
+      githubUrl: 'https://github.com/AnvitAjgaokar/BlogSite-Backend',
+      highlight: 'Enterprise-grade from day one',
+    },
 
     {
       name: 'GRE Vocab',
@@ -16,7 +49,7 @@ const projects = {
         'A ground-up HTTP application server written in Rust, built to demystify how enterprise application servers like Weblogic handle request lifecycles, thread management, and WAR/JAR deployments — driven by first-hand production experience with Java EE.',
       techStack: ['Rust'],
       liveUrl: null,
-      githubUrl: 'https://github.com/AnvitAjgaokar/RustApplicationServer',
+      githubUrl: 'https://github.com/AnvitAjgaokar/RustApplicationServer/tree/first-iteration',
       highlight: 'Built to understand the internals',
     },
     {
@@ -37,6 +70,18 @@ const projects = {
       githubUrl: 'https://github.com/AnvitAjgaokar/Dimension-Exploere',
       highlight: 'Physics curiosity project',
     },
+    {
+      name: 'Roboroamer',
+      description:
+        'An Arduino Uno-based rover with real-time collision detection via ultrasonic sensors. The differentiating choice: rather than relying on any off-the-shelf controller, a purpose-built Flutter application was developed from scratch to stream directional commands to the car — full hardware-software integration with no third-party control software in the loop.',
+      techStack: ['Flutter', 'Arduino', 'C++'],
+      liveUrl: null,
+      githubUrl: 'https://github.com/AnvitAjgaokar/Roboroamer3',
+      highlight: 'Zero off-the-shelf software',
+    },
+
+
+
   ],
   professional: [
     {

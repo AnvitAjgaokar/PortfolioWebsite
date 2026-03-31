@@ -4,6 +4,8 @@ const about = {
     "I build and maintain enterprise services for an HR platform serving 130,000+ employees at India's 2nd largest private bank. Outside of work, curiosity takes over — from 3D physics engines to application server internals.",
   ],
   currently: "Backend Engineer at CMSS — enterprise HR platform for India's 2nd largest private bank",
+  // Set to false to hide the avatar/monogram box in the About section — no code change required.
+  showAvatar: false,
   avatar: 'AJ',
   stats: [
     { value: '2', label: 'Years Exp.' },

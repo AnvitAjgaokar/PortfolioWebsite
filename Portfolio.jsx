@@ -563,14 +563,16 @@ function Nav() {
           </div>
 
           <div className="flex items-center gap-4">
-            <a
-              href={social.resume}
-              target="_blank" rel="noreferrer"
-              className="hidden md:inline-flex items-center gap-1.5 font-display text-xs px-4 py-2 text-[#64ffda] hover:bg-[rgba(100,255,218,0.07)] transition-colors"
-              style={{ border: '1px solid rgba(100,255,218,0.5)' }}
-            >
-              Resume <ArrowUpRight size={11} />
-            </a>
+            {social.showResume && (
+              <a
+                href={social.resume}
+                target="_blank" rel="noreferrer"
+                className="hidden md:inline-flex items-center gap-1.5 font-display text-xs px-4 py-2 text-[#64ffda] hover:bg-[rgba(100,255,218,0.07)] transition-colors"
+                style={{ border: '1px solid rgba(100,255,218,0.5)' }}
+              >
+                Resume <ArrowUpRight size={11} />
+              </a>
+            )}
             <button
               onClick={() => setMobileOpen(o => !o)}
               className="md:hidden text-[#777] hover:text-[#e8e8e8] transition-colors bg-transparent border-0 cursor-pointer p-2.5 -mr-1"
@@ -602,13 +604,15 @@ function Nav() {
             {l.label}
           </button>
         ))}
-        <a
-          href={social.resume}
-          className="mt-4 font-display text-sm px-8 py-3 text-[#64ffda]"
-          style={{ border: '1px solid rgba(100,255,218,0.5)' }}
-        >
-          Resume
-        </a>
+        {social.showResume && (
+          <a
+            href={social.resume}
+            className="mt-4 font-display text-sm px-8 py-3 text-[#64ffda]"
+            style={{ border: '1px solid rgba(100,255,218,0.5)' }}
+          >
+            Resume
+          </a>
+        )}
       </div>
     </>
   );
@@ -756,9 +760,9 @@ function About() {
   return (
     <section id="about" className="py-16 sm:py-24 lg:py-28 max-w-6xl mx-auto px-5 sm:px-8 lg:px-12">
       <SectionHeader number="01" title="About Me" />
-      <div className="grid md:grid-cols-2 gap-10 lg:gap-16 items-start">
+      <div className={`grid ${about.showAvatar ? 'md:grid-cols-2' : ''} gap-10 lg:gap-16 items-start`}>
         {/* Avatar box */}
-        <div ref={boxRef} className={`anim-slide-left ${boxInView ? 'in-view' : ''}`}>
+        {about.showAvatar && <div ref={boxRef} className={`anim-slide-left ${boxInView ? 'in-view' : ''}`}>
           <div
             className="relative aspect-square max-w-[200px] sm:max-w-xs mx-auto md:mx-0 cursor-default avatar-float"
             style={{
@@ -801,7 +805,7 @@ function About() {
               }}
             />
           </div>
-        </div>
+        </div>}
 
         {/* Bio */}
         <div ref={textRef} className={`fade-up delay-2 ${textInView ? 'in-view' : ''} space-y-5`}>
@@ -1084,28 +1088,33 @@ function Projects() {
     ? projects.professional
     : projects.professional.slice(0, PROJECTS_INITIAL);
 
+  // Tab list is built dynamically — Professional tab is omitted when showProfessional is false
+  const tabs = [
+    { key: 'personal', label: 'Personal / OSS' },
+    ...(projects.showProfessional ? [{ key: 'professional', label: 'Professional' }] : []),
+  ];
+
   return (
     <section id="projects" style={{ background: 'linear-gradient(180deg, #080808 0%, #1a1a1a 50%, #080808 100%)' }} className="py-16 sm:py-24 lg:py-28">
       <div className="max-w-6xl mx-auto px-5 sm:px-8 lg:px-12">
         <SectionHeader number="04" title="Projects" subtitle="Things I've built." />
 
-        {/* Tab switcher */}
-        <div className="flex mb-8 sm:mb-10 w-full sm:w-fit" style={{ border: '1px solid #1c1c1c' }}>
-          {[
-            { key: 'personal', label: 'Personal / OSS' },
-            { key: 'professional', label: 'Professional' },
-          ].map(t => (
-            <button
-              key={t.key}
-              onClick={() => setTab(t.key)}
-              className={`flex-1 sm:flex-none font-display text-xs px-6 py-3 sm:py-2.5 min-h-[48px] sm:min-h-0 border-0 cursor-pointer transition-all ${
-                tab === t.key ? 'tab-active' : 'text-[#777] hover:text-[#aaa] bg-transparent'
-              }`}
-            >
-              {t.label}
-            </button>
-          ))}
-        </div>
+        {/* Tab switcher — only rendered when more than one tab is available */}
+        {tabs.length > 1 && (
+          <div className="flex mb-8 sm:mb-10 w-full sm:w-fit" style={{ border: '1px solid #1c1c1c' }}>
+            {tabs.map(t => (
+              <button
+                key={t.key}
+                onClick={() => setTab(t.key)}
+                className={`flex-1 sm:flex-none font-display text-xs px-6 py-3 sm:py-2.5 min-h-[48px] sm:min-h-0 border-0 cursor-pointer transition-all ${
+                  tab === t.key ? 'tab-active' : 'text-[#777] hover:text-[#aaa] bg-transparent'
+                }`}
+              >
+                {t.label}
+              </button>
+            ))}
+          </div>
+        )}
 
         {tab === 'personal' && (
           <>
@@ -1122,7 +1131,7 @@ function Projects() {
           </>
         )}
 
-        {tab === 'professional' && (
+        {projects.showProfessional && tab === 'professional' && (
           <>
             <div className="grid md:grid-cols-2 gap-4">
               {visiblePro.map((p, i) => (
